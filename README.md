@@ -1,7 +1,30 @@
 # imgcmp
+
+<p align="center"><img src="./figs/logo.png" width="50%"></p>
+
 This [GitHub action](https://github.com/features/actions) optimizes images in your repository.
 After your `git push`, you will receive a pull request with optimized images.
+This Github action is inspired by [ImgBot](https://github.com/dabutvin/ImgBot).
 
+The pull request example:
+<p align="center"><img src="./figs/sample.png" width="60%"></p>
+
+## Usage
+To use the GitHub acion add the following lines to your `.github/workflows/imgcmp.yml`:
+
+```yml
+name: imgcmp
+on: push
+jobs:
+  build:
+    name: imgcmp
+    runs-on: ubuntu-latest    
+    steps:
+    - uses: actions/checkout@master
+    - uses: 9sako6/imgcmp@0.0.1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+```
 
 ## Optimization tools
 This bot uses these optimizers.
@@ -11,3 +34,6 @@ This bot uses these optimizers.
 
 ### [OptiPNG](http://optipng.sourceforge.net/)
 - `-o2`: this set the optimization level 2 (there is 0-7 optimization levels)
+
+## Author
+9sako6
