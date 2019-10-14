@@ -3,7 +3,7 @@
 <p align="center"><img src="./figs/logo.png" width="50%"></p>
 
 This [GitHub action](https://github.com/features/actions) optimizes images in your repository.
-After your `git push`, you will receive a pull request with optimized images.
+You will receive a pull request with optimized images after your `git push`.
 This Github action is inspired by [ImgBot](https://github.com/dabutvin/ImgBot).
 
 The pull request example:
@@ -25,11 +25,13 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 ```
 
+Then, you will receive a pull request with optimized images after your `git push`.
+
 ## Supported image formats
 - [x] JPEG/JPG
 - [x] PNG
 - [x] GIF
-- [ ] SVG
+- [x] SVG
 
 
 ## Optimization tools
@@ -44,7 +46,8 @@ This bot uses these optimizers.
 ### [Gifsicle](https://www.lcdf.org/gifsicle/)
 - `-O3`: this sets the optimization level to Gifsicle's maximum
 
-
+### [SVGO](https://github.com/svg/svgo)
+SVGO's default configuration will be used.
 
 ## Author
 9sako6
