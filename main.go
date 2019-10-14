@@ -13,6 +13,12 @@ import (
 
 func main() {
 	imageList := makeImageList(".")
+
+	if len(imageList) == 0 {
+		fmt.Println("there is no image files")
+		os.Exit(0)
+	}
+
 	pullRequestMessage := []string{
 		"[imgcmp] Optimize images",
 		"",
@@ -50,14 +56,15 @@ func main() {
 	// pull request
 	if (totalAfterSize - totalBeforeSize) == 0 {
 		fmt.Println("images are already optimized")
+		os.Exit(0)
 	} else {
 		reportTable = append(reportTable, tableRow("Total", totalBeforeSize, totalAfterSize), "", "</details>")
 		pullRequestMessage = append(
 			pullRequestMessage,
 			fmt.Sprintf(
-				"Your image file size has been reduced by **%v** (**%v**)",
-				diffRate(totalBeforeSize, totalAfterSize),
+				"Your image files have been optimized (File size: **%v** (**%v**))!",
 				byte2unit(totalAfterSize-totalBeforeSize),
+				diffRate(totalBeforeSize, totalAfterSize),
 			),
 			"",
 		)

@@ -7,7 +7,7 @@ After your `git push`, you will receive a pull request with optimized images.
 This Github action is inspired by [ImgBot](https://github.com/dabutvin/ImgBot).
 
 The pull request example:
-<p align="center"><img src="./figs/sample.png" width="60%"></p>
+<p align="center"><img src="./figs/sample_pull_request.png" width="80%"></p>
 
 ## Usage
 To use the GitHub acion add the following lines to your `.github/workflows/imgcmp.yml`:
@@ -20,8 +20,7 @@ jobs:
     name: imgcmp
     runs-on: ubuntu-latest    
     steps:
-    - uses: actions/checkout@master
-    - uses: 9sako6/imgcmp@0.0.1
+    - uses: 9sako6/imgcmp@master
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 ```
