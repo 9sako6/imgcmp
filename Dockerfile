@@ -10,6 +10,7 @@ LABEL "maintainer"="9sako6"
 
 RUN apt-get update && apt-get install -y \
     bash \
+    gifsicle \
     git \
     jpegoptim \
     optipng

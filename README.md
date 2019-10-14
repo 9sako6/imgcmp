@@ -25,6 +25,13 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 ```
 
+## Supported image formats
+- [x] JPEG/JPG
+- [x] PNG
+- [x] GIF
+- [ ] SVG
+
+
 ## Optimization tools
 This bot uses these optimizers.
 
@@ -32,7 +39,12 @@ This bot uses these optimizers.
 - `-m85`: this will store the image with 85% quality
 
 ### [OptiPNG](http://optipng.sourceforge.net/)
-- `-o2`: this set the optimization level 2 (there is 0-7 optimization levels)
+- `-o2`: this sets the optimization level 2 (there is 0-7 optimization levels)
+
+### [Gifsicle](https://www.lcdf.org/gifsicle/)
+- `-O3`: this sets the optimization level to Gifsicle's maximum
+
+
 
 ## Author
 9sako6

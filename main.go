@@ -88,7 +88,7 @@ func makeImageList(root string) []string {
 			return nil
 		}
 		rel, err := filepath.Rel(root, path)
-		if isJPEG(rel) || isPNG(rel) {
+		if isJPEG(rel) || isPNG(rel) || isGIF(rel) {
 			imageList = append(imageList, rel)
 		}
 		return nil
@@ -108,11 +108,17 @@ func isPNG(path string) bool {
 	return regexp.MustCompile(`\.[pP][nN][gG]$`).MatchString(path)
 }
 
+func isGIF(path string) bool {
+	return regexp.MustCompile(`\.[gG][iI][fF]$`).MatchString(path)
+}
+
 func optimizeImage(path string) {
 	if isJPEG(path) {
 		execCommand("jpegoptim", []string{"-m85", path})
 	} else if isPNG(path) {
 		execCommand("optipng", []string{"-o2", path})
+	} else if isGIF(path) {
+		execCommand("gifsicle", []string{"-b", "-O3", "--colors", "256", path})
 	}
 }
 
