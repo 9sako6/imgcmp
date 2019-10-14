@@ -30,6 +30,6 @@ git clone "${REMOTE_REPO}" local_repo
 cd local_repo
 git checkout -b "${REMOTE_BRANCH}"
 
-# --- main process begin ---
+# main flow
 imgcmp
-# --- main process end   ---
+
