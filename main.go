@@ -88,7 +88,9 @@ func makeImageList(root string) []string {
 			return nil
 		}
 		rel, err := filepath.Rel(root, path)
-		if isJPEG(rel) || isPNG(rel) || isGIF(rel) || isSVG(rel) {
+		fileType := strings.Split(execCommand("file", []string{rel}), " ")[1]
+		fmt.Println(fileType)
+		if isJPEG(fileType) || isPNG(fileType) || isGIF(fileType) || isSVG(fileType) {
 			imageList = append(imageList, rel)
 		}
 		return nil
@@ -100,20 +102,20 @@ func makeImageList(root string) []string {
 	return imageList
 }
 
-func isJPEG(path string) bool {
-	return regexp.MustCompile(`(\.[jJ][pP][eE]?[gG]$|\.[jJ][pP][eE]$)`).MatchString(path)
+func isJPEG(fileType string) bool {
+	return fileType == "JPEG"
 }
 
-func isPNG(path string) bool {
-	return regexp.MustCompile(`\.[pP][nN][gG]$`).MatchString(path)
+func isPNG(fileType string) bool {
+	return fileType == "PNG"
 }
 
-func isGIF(path string) bool {
-	return regexp.MustCompile(`\.[gG][iI][fF]$`).MatchString(path)
+func isGIF(fileType string) bool {
+	return fileType == "GIF"
 }
 
-func isSVG(path string) bool {
-	return regexp.MustCompile(`\.[sS][vV][gG]$`).MatchString(path)
+func isSVG(fileType string) bool {
+	return fileType == "SVG"
 }
 
 func optimizeImage(path string) {
@@ -128,12 +130,13 @@ func optimizeImage(path string) {
 	}
 }
 
-func execCommand(command string, args []string) {
-	_, err := exec.Command(command, args...).Output()
+func execCommand(command string, args []string) string {
+	output, err := exec.Command(command, args...).Output()
 	if err != nil {
 		fmt.Println(err.Error())
 		os.Exit(1)
 	}
+	return string(output)
 }
 
 func fileSize(path string) int64 {
