@@ -31,7 +31,5 @@ cd local_repo
 git checkout -b "${REMOTE_BRANCH}"
 
 # main flow
-echo ${IGNORED_FILES}
-echo "---"
 imgcmp
 
