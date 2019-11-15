@@ -12,6 +12,8 @@ import (
 )
 
 func main() {
+	fmt.Println("ignored files:")
+	fmt.Println(os.Getenv("IGNORED_FILES"))
 	imageList := makeImageList(".", env2fileList(os.Getenv("IGNORED_FILES")))
 
 	if len(imageList) == 0 {
