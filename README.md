@@ -27,6 +27,26 @@ jobs:
 
 Then, you will receive a pull request with optimized images after your `git push`.
 
+## Configuration
+imgcmp offers an ignore option.
+
+example:
+
+```yml
+name: imgcmp
+on: push
+jobs:
+  build:
+    name: imgcmp
+    runs-on: ubuntu-latest    
+    steps:
+    - uses: 9sako6/imgcmp@master
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        IGNORED_FILES: "public/*:posts/*.svg"
+```
+
+
 ## Supported image formats
 - [x] JPEG/JPG
 - [x] PNG

@@ -2,6 +2,7 @@ FROM golang:latest
 
 RUN apt-get update -qq && apt-get install -y \
     bash \
+    file \
     gifsicle \
     git \
     jpegoptim \

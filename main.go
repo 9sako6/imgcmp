@@ -12,7 +12,7 @@ import (
 )
 
 func main() {
-	imageList := makeImageList(".")
+	imageList := makeImageList(".", env2fileList(os.Getenv("IGNORED_FILES")))
 
 	if len(imageList) == 0 {
 		fmt.Println("there is no image files")
@@ -77,7 +77,19 @@ func main() {
 	}
 }
 
-func makeImageList(root string) []string {
+func env2fileList(env string) []string {
+	fileList := []string{}
+	fileListWildcard := strings.Split(env, ":")
+	for _, fileWildcard := range fileListWildcard {
+		files, _ := filepath.Glob(fileWildcard)
+		fileList = append(fileList, files...)
+	}
+	return fileList
+}
+
+func makeImageList(root string, ignoredFileList []string) []string {
+	ignoredRegexp := regexp.MustCompile(strings.Join(ignoredFileList, "|"))
+
 	skipDirRegexp := regexp.MustCompile(`^\..+`)
 	imageList := []string{}
 	callback := func(path string, info os.FileInfo, err error) error {
@@ -89,7 +101,7 @@ func makeImageList(root string) []string {
 		}
 		rel, err := filepath.Rel(root, path)
 		fileType := strings.Split(execCommand("file", []string{rel}), " ")[1]
-		if isJPEG(fileType) || isPNG(fileType) || isGIF(fileType) || isSVG(fileType) {
+		if !ignoredRegexp.MatchString(rel) && (isJPEG(fileType) || isPNG(fileType) || isGIF(fileType) || isSVG(fileType)) {
 			imageList = append(imageList, rel)
 		}
 		return nil
@@ -118,13 +130,14 @@ func isSVG(fileType string) bool {
 }
 
 func optimizeImage(path string) {
-	if isJPEG(path) {
+	fileType := strings.Split(execCommand("file", []string{path}), " ")[1]
+	if isJPEG(fileType) {
 		execCommand("jpegoptim", []string{"-m85", path})
-	} else if isPNG(path) {
+	} else if isPNG(fileType) {
 		execCommand("optipng", []string{"-o2", path})
-	} else if isGIF(path) {
+	} else if isGIF(fileType) {
 		execCommand("gifsicle", []string{"-b", "-O3", "--colors", "256", path})
-	} else if isSVG(path) {
+	} else if isSVG(fileType) {
 		execCommand("svgo", []string{path})
 	}
 }
