@@ -12,7 +12,7 @@ import (
 )
 
 func main() {
-	imageList := makeImageList(".")
+	imageList := makeImageList(".", env2fileList(os.Getenv("IGNORED_FILES")))
 
 	if len(imageList) == 0 {
 		fmt.Println("there is no image files")
@@ -77,7 +77,19 @@ func main() {
 	}
 }
 
-func makeImageList(root string) []string {
+func env2fileList(env string) []string {
+	fileList := []string{}
+	fileListWildcard := strings.Split(env, ":")
+	for _, fileWildcard := range fileListWildcard {
+		files, _ := filepath.Glob(fileWildcard)
+		fileList = append(fileList, files...)
+	}
+	return fileList
+}
+
+func makeImageList(root string, ignoredFileList []string) []string {
+	ignoredRegexp := regexp.MustCompile(strings.Join(ignoredFileList, "|"))
+
 	skipDirRegexp := regexp.MustCompile(`^\..+`)
 	imageList := []string{}
 	callback := func(path string, info os.FileInfo, err error) error {
@@ -89,7 +101,7 @@ func makeImageList(root string) []string {
 		}
 		rel, err := filepath.Rel(root, path)
 		fileType := strings.Split(execCommand("file", []string{rel}), " ")[1]
-		if isJPEG(fileType) || isPNG(fileType) || isGIF(fileType) || isSVG(fileType) {
+		if !ignoredRegexp.MatchString(rel) && (isJPEG(fileType) || isPNG(fileType) || isGIF(fileType) || isSVG(fileType)) {
 			imageList = append(imageList, rel)
 		}
 		return nil
