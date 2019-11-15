@@ -14,6 +14,7 @@ import (
 func main() {
 	imageList := makeImageList(".", env2fileList(os.Getenv("IGNORED_FILES")))
 	fmt.Println(os.Getenv("IGNORED_FILES"))
+	fmt.Println("debug message")
 
 	if len(imageList) == 0 {
 		fmt.Println("there is no image files")
