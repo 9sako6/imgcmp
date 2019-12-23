@@ -73,6 +73,9 @@ ls ../workspace
 echo "../workflow:"
 ls ../workflow
 
+echo "/github:"
+ls /github
+
 # check envs
 if [ -z "${DEBUG_IMGCMP}" ]; then
     if [ -z "${GITHUB_TOKEN}" ]; then
