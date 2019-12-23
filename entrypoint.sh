@@ -76,7 +76,7 @@ ls ../workflow
 echo "/github:"
 ls /github
 
-find / -name main.go
+find / -name imgcmp.go
 
 # check envs
 if [ -z "${DEBUG_IMGCMP}" ]; then
