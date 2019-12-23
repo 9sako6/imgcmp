@@ -45,7 +45,7 @@ func main() {
 			optimizeImage(p)
 			afterSize := fileSize(p)
 			mutex.Lock()
-			reportTable = append(reportTable, tableRow(p, beforeSize, afterSize))
+			reportTable = append(reportTable, tableRow(strings.Replace(p, root+"/", "", 1), beforeSize, afterSize))
 			mutex.Unlock()
 			totalBeforeSize += beforeSize
 			totalAfterSize += afterSize

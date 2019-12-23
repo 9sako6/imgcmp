@@ -66,7 +66,7 @@ if [ -z "${DEBUG_IMGCMP}" ]; then
         exit 1
     fi
     # production mode
-    TARGET_DIR="./local_repo"
+    TARGET_DIR="local_repo"
     REMOTE_REPO="https://x-access-token:${GITHUB_TOKEN}@github.com/${GITHUB_REPOSITORY}.git"
     REMOTE_BRANCH="imgcmp-${GITHUB_SHA}"
     GITHUB_EMAIL="${GITHUB_ACTOR}@users.noreply.github.com"
@@ -75,7 +75,7 @@ else
     # debug mode on a local machine
     print_info "imgcmp is running on debug mode"
     # set envs
-    TARGET_DIR="./local_repo"
+    TARGET_DIR="local_repo"
     REMOTE_REPO="https://github.com/9sako6/imgcmp.git"
     REMOTE_BRANCH="imgcmp-debug-"`date +'%Y%m%d%H%M%S'`
     main_flow "${TARGET_DIR}" "${GITHUB_ACTOR}" "${GITHUB_EMAIL}" "${REMOTE_REPO}" "${REMOTE_BRANCH}" true
