@@ -7,7 +7,11 @@ function print_error() {
     echo -e "\e[31mERROR: ${1}\e[m"
 }
 
-echo "imgcmp:"
+echo "  _                          "
+echo " (_)_ __  __ _ __ _ __  _ __ "
+echo " | | '  \/ _\` / _| '  \| '_ \\"
+echo " |_|_|_|_\__, \__|_|_|_| .__/"
+echo "         |___/         |_|   "
 
 # check envs
 if [ -z "${GITHUB_TOKEN}" ]; then

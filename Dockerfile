@@ -1,5 +1,7 @@
 FROM golang:latest
 
+RUN set -ex
+
 RUN apt-get update -qq && apt-get install -y \
     bash \
     file \
