@@ -1,5 +1,7 @@
 # imgcmp
 
+[![Go Report Card](https://goreportcard.com/badge/github.com/9sako6/imgcmp)](https://goreportcard.com/report/github.com/9sako6/imgcmp)
+
 <p align="center"><img src="./figs/logo.png" width="50%"></p>
 
 This [GitHub action](https://github.com/features/actions) optimizes images in your repository.

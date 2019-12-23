@@ -12,8 +12,8 @@ import (
 )
 
 func main() {
-	imageList := makeImageList(".", env2fileList(os.Getenv("IGNORED_FILES")))
-
+	root := os.Args[1]
+	imageList := makeImageList(root, env2fileList(root, os.Getenv("IGNORED_FILES")))
 	if len(imageList) == 0 {
 		fmt.Println("there is no image files")
 		os.Exit(0)
@@ -68,20 +68,29 @@ func main() {
 			),
 			"",
 		)
-		execCommand("git", []string{"add", "."})
-		execCommand("git", []string{"commit", "-m", "Optimize images of " + os.Getenv("GITHUB_SHA")})
-		execCommand("git", []string{"push", "origin", os.Getenv("REMOTE_BRANCH")})
+		file, err := os.Create("./pull_request_message.md")
+		if err != nil {
+			fmt.Println(err.Error())
+			os.Exit(0)
+		}
+		defer file.Close()
+
 		pullRequestMessage = append(pullRequestMessage, reportTable...)
-		execCommand("hub", []string{"pull-request", "-m", strings.Join(pullRequestMessage, "\n")})
+		output := strings.Join(pullRequestMessage, "\n")
+		file.Write(([]byte)(output))
+
 		fmt.Println("Successfully optimized")
 	}
 }
 
-func env2fileList(env string) []string {
+func env2fileList(root string, env string) []string {
 	fileList := []string{}
 	fileListWildcard := strings.Split(env, ":")
+	if env == "" {
+		return fileList
+	}
 	for _, fileWildcard := range fileListWildcard {
-		files, _ := filepath.Glob(fileWildcard)
+		files, _ := filepath.Glob(root + "/" + fileWildcard)
 		fileList = append(fileList, files...)
 	}
 	return fileList
@@ -89,6 +98,10 @@ func env2fileList(env string) []string {
 
 func makeImageList(root string, ignoredFileList []string) []string {
 	ignoredRegexp := regexp.MustCompile(strings.Join(ignoredFileList, "|"))
+	if len(ignoredFileList) == 0 {
+		// 0^ matches nothing
+		ignoredRegexp = regexp.MustCompile("0^")
+	}
 
 	skipDirRegexp := regexp.MustCompile(`^\..+`)
 	imageList := []string{}
@@ -99,10 +112,10 @@ func makeImageList(root string, ignoredFileList []string) []string {
 			}
 			return nil
 		}
-		rel, err := filepath.Rel(root, path)
-		fileType := strings.Split(execCommand("file", []string{rel}), " ")[1]
-		if !ignoredRegexp.MatchString(rel) && (isJPEG(fileType) || isPNG(fileType) || isGIF(fileType) || isSVG(fileType)) {
-			imageList = append(imageList, rel)
+		fileType := strings.Split(execCommand("file", []string{path}), " ")[1]
+
+		if !ignoredRegexp.MatchString(path) && (isJPEG(fileType) || isPNG(fileType) || isGIF(fileType) || isSVG(fileType)) {
+			imageList = append(imageList, path)
 		}
 		return nil
 	}
