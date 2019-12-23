@@ -15,6 +15,7 @@ RUN apt-get install -y nodejs
 RUN npm install -g svgo
 RUN go get github.com/github/hub
 COPY main.go .
+RUN ls
 
 ADD entrypoint.sh /entrypoint.sh
 RUN chmod +x /entrypoint.sh
