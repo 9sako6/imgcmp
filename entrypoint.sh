@@ -76,6 +76,8 @@ ls ../workflow
 echo "/github:"
 ls /github
 
+find / -name main.go
+
 # check envs
 if [ -z "${DEBUG_IMGCMP}" ]; then
     if [ -z "${GITHUB_TOKEN}" ]; then
