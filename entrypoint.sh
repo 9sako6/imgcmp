@@ -56,6 +56,9 @@ echo " |_|_|_|_\__, \__|_|_|_| .__/"
 echo "         |___/         |_|   "
 
 ls
+ls /
+ls /home
+ls ..
 
 # check envs
 if [ -z "${DEBUG_IMGCMP}" ]; then
