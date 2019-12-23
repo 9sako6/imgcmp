@@ -1,6 +1,6 @@
 #!/bin/bash
 
-set -e
+set -ex
 
 # utils
 function print_error() {
