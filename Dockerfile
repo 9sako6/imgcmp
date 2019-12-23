@@ -14,7 +14,7 @@ RUN curl -sL https://deb.nodesource.com/setup_12.x | bash -
 RUN apt-get install -y nodejs
 RUN npm install -g svgo
 RUN go get github.com/github/hub
-COPY main.go ./imgcmp.go
+COPY main.go .
 RUN ls
 
 ADD entrypoint.sh /entrypoint.sh

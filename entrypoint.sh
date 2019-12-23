@@ -31,11 +31,14 @@ function main_flow() {
     git checkout -b "${REMOTE_BRANCH}"
     cd ..
     # main flow
-    go run main.go "${TARGET_DIR}"
-    pull_request_message=`cat ./pull_request_message.md`
     if "${is_debug}"; then
         # check the result
+        go run main.go "${TARGET_DIR}"
+        pull_request_message=`cat ./pull_request_message.md`
         echo "${pull_request_message}"
+    else
+        go run /go/main.go "${TARGET_DIR}"
+        pull_request_message=`cat ./pull_request_message.md`
     fi
     # setting for git
     cd "${TARGET_DIR}"
@@ -55,28 +58,6 @@ echo " | | '  \/ _\` / _| '  \| '_ \\"
 echo " |_|_|_|_\__, \__|_|_|_| .__/"
 echo "         |___/         |_|   "
 
-echo "/:"
-ls /
-
-echo "/home:"
-ls /home
-
-echo "..:"
-ls ..
-
-echo ".:"
-ls .
-
-echo "../workspace:"
-ls ../workspace
-
-echo "../workflow:"
-ls ../workflow
-
-echo "/github:"
-ls /github
-
-find / -name imgcmp.go
 
 # check envs
 if [ -z "${DEBUG_IMGCMP}" ]; then
