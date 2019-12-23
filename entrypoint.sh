@@ -55,10 +55,23 @@ echo " | | '  \/ _\` / _| '  \| '_ \\"
 echo " |_|_|_|_\__, \__|_|_|_| .__/"
 echo "         |___/         |_|   "
 
-ls
+echo "/:"
 ls /
+
+echo "/home:"
 ls /home
+
+echo "..:"
 ls ..
+
+echo ".:"
+ls .
+
+echo "../workspace:"
+ls ../workspace
+
+echo "../workflow:"
+ls ../workflow
 
 # check envs
 if [ -z "${DEBUG_IMGCMP}" ]; then
