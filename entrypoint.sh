@@ -39,16 +39,16 @@ function main_flow() {
     else
         go run /go/main.go "${TARGET_DIR}"
         pull_request_message=`cat ./pull_request_message.md`
+        # setting for git
+        cd "${TARGET_DIR}"
+        git config --global user.name "${GITHUB_ACTOR}"
+        git config --global user.email "${GITHUB_EMAIL}"
+        # pull request
+        git add .
+        git commit -m "Optimize images of ${GITHUB_SHA}"
+        git push origin "${REMOTE_BRANCH}"
+        hub pull-request -m "${pull_request_message}"
     fi
-    # setting for git
-    cd "${TARGET_DIR}"
-    git config --global user.name "${GITHUB_ACTOR}"
-    git config --global user.email "${GITHUB_EMAIL}"
-    # pull request
-    git add .
-    git commit -m "Optimize images of ${GITHUB_SHA}"
-    git push origin "${REMOTE_BRANCH}"
-    hub pull-request -m "${pull_request_message}"
 }
 
 
@@ -57,7 +57,6 @@ echo " (_)_ __  __ _ __ _ __  _ __ "
 echo " | | '  \/ _\` / _| '  \| '_ \\"
 echo " |_|_|_|_\__, \__|_|_|_| .__/"
 echo "         |___/         |_|   "
-
 
 # check envs
 if [ -z "${DEBUG_IMGCMP}" ]; then
