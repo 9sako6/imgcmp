@@ -31,14 +31,12 @@ function main_flow() {
     git checkout -b "${REMOTE_BRANCH}"
     cd ..
     # main flow
+    go run $(find / -name imgcmp.go) "${TARGET_DIR}"
+    pull_request_message=`cat ./pull_request_message.md`
     if "${is_debug}"; then
         # check the result
-        go run main.go "${TARGET_DIR}"
-        pull_request_message=`cat ./pull_request_message.md`
         echo "${pull_request_message}"
     else
-        go run /go/main.go "${TARGET_DIR}"
-        pull_request_message=`cat ./pull_request_message.md`
         # setting for git
         cd "${TARGET_DIR}"
         git config --global user.name "${GITHUB_ACTOR}"
