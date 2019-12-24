@@ -1,7 +1,7 @@
 name: imgcmp
 on: push
 jobs:
-  build:
+  main-flow:
     name: imgcmp
     runs-on: ubuntu-latest    
     steps:
