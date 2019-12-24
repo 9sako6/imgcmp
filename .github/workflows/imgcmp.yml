@@ -5,13 +5,16 @@ jobs:
     name: imgcmp
     runs-on: ubuntu-latest    
     steps:
-    - uses: action/cache@v1
+    - uses: actions/checkout@v1
+    - name: Cache go
+      uses: action/cache@v1
       with:
         path: ~/go/pkg/mod
         key: ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
         restore-keys: |
           ${{ runner.os }}-go-
-    - uses: actions/cache@v1
+    - name: Cache npm
+      uses: actions/cache@v1
       with:
         path: ~/.npm
         key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
