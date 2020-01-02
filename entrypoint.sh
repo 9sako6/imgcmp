@@ -32,6 +32,9 @@ function main_flow() {
     cd ..
     # main flow
     go run $(find / -name imgcmp.go) "${TARGET_DIR}"
+    if [ ! -e "./pull_request_message.md" ]; then
+        exit 0
+    fi
     pull_request_message=`cat ./pull_request_message.md`
     if "${is_debug}"; then
         # check the result
