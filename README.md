@@ -5,7 +5,7 @@
 <p align="center"><img src="./figs/logo.png" width="50%"></p>
 
 This [GitHub action](https://github.com/features/actions) optimizes images in your repository.
-You will receive a pull request with optimized images after your `git push`.
+You will receive a pull request with optimized images after your pull request.
 This Github action is inspired by [ImgBot](https://github.com/dabutvin/ImgBot).
 
 The pull request example:
@@ -16,7 +16,7 @@ To use the GitHub acion add the following lines to your `.github/workflows/imgcm
 
 ```yml
 name: imgcmp
-on: push
+on: pull_request
 jobs:
   build:
     name: imgcmp
@@ -27,7 +27,7 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 ```
 
-Then, you will receive a pull request with optimized images after your `git push`.
+Then, you will receive a pull request with optimized images after your pull request.
 
 ## Configuration
 imgcmp offers an ignore option.
@@ -36,7 +36,7 @@ example:
 
 ```yml
 name: imgcmp
-on: push
+on: pull_request
 jobs:
   build:
     name: imgcmp
