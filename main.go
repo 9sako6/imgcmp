@@ -11,6 +11,14 @@ import (
 	"sync"
 )
 
+var supportedImageFiles = []string{
+	"JPEG",
+	"GIF",
+	"PNG",
+	"SVG",
+	"WEBP",
+}
+
 func main() {
 	root := os.Args[1]
 	imageList := makeImageList(root, env2fileList(root, os.Getenv("IGNORED_FILES")))
@@ -32,10 +40,13 @@ func main() {
 		"|File Name|Before|After|Diff (size)|Diff (rate)|",
 		"|:---|---:|---:|---:|---:|",
 	}
-	var totalBeforeSize int64 = 0
-	var totalAfterSize int64 = 0
-	wg := &sync.WaitGroup{}
-	mutex := &sync.Mutex{}
+
+	var (
+		totalBeforeSize int64 = 0
+		totalAfterSize  int64 = 0
+		wg                    = &sync.WaitGroup{}
+		mutex                 = &sync.Mutex{}
+	)
 	// optimize images and make reportTable
 	for _, path := range imageList {
 		wg.Add(1)
@@ -112,9 +123,15 @@ func makeImageList(root string, ignoredFileList []string) []string {
 			}
 			return nil
 		}
-		fileType := strings.Split(execCommand("file", []string{path}), " ")[1]
 
-		if !ignoredRegexp.MatchString(path) && (isJPEG(fileType) || isPNG(fileType) || isGIF(fileType) || isSVG(fileType)) {
+		fileType := getFileType(path)
+		isImageFile := false
+		for _, supportedFileType := range supportedImageFiles {
+			if supportedFileType == fileType {
+				isImageFile = true
+			}
+		}
+		if isImageFile && !ignoredRegexp.MatchString(path) {
 			imageList = append(imageList, path)
 		}
 		return nil
@@ -126,32 +143,35 @@ func makeImageList(root string, ignoredFileList []string) []string {
 	return imageList
 }
 
-func isJPEG(fileType string) bool {
-	return fileType == "JPEG"
-}
-
-func isPNG(fileType string) bool {
-	return fileType == "PNG"
-}
-
-func isGIF(fileType string) bool {
-	return fileType == "GIF"
-}
-
-func isSVG(fileType string) bool {
-	return fileType == "SVG"
+func getFileType(path string) string {
+	fileInfo := execCommand("file", []string{path})
+	var imageFilePatterns = map[string]*regexp.Regexp{
+		"JPEG": regexp.MustCompile("JPEG image data"),
+		"GIF":  regexp.MustCompile("GIF image data"),
+		"PNG":  regexp.MustCompile("PNG image data"),
+		"SVG":  regexp.MustCompile("SVG image data"),
+		"WEBP": regexp.MustCompile("Web/P image"),
+	}
+	for _, fileType := range supportedImageFiles {
+		if imageFilePatterns[fileType].MatchString(fileInfo) {
+			return fileType
+		}
+	}
+	return "OTHER"
 }
 
 func optimizeImage(path string) {
-	fileType := strings.Split(execCommand("file", []string{path}), " ")[1]
-	if isJPEG(fileType) {
+	fileType := getFileType(path)
+	if fileType == "JPEG" {
 		execCommand("jpegoptim", []string{"-m85", path})
-	} else if isPNG(fileType) {
+	} else if fileType == "PNG" {
 		execCommand("optipng", []string{"-o2", path})
-	} else if isGIF(fileType) {
+	} else if fileType == "GIF" {
 		execCommand("gifsicle", []string{"-b", "-O3", "--colors", "256", path})
-	} else if isSVG(fileType) {
+	} else if fileType == "SVG" {
 		execCommand("svgo", []string{path})
+	} else if fileType == "WEBP" {
+		execCommand("cwebp", []string{"-q", "50", path, "-o", path})
 	}
 }
 

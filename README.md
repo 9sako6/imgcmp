@@ -54,6 +54,7 @@ jobs:
 - [x] PNG
 - [x] GIF
 - [x] SVG
+- [x] WEBP
 
 
 ## Optimization tools
@@ -70,6 +71,9 @@ This bot uses these optimizers.
 
 ### [SVGO](https://github.com/svg/svgo)
 SVGO's default configuration will be used.
+
+### [cwebp](https://developers.google.com/speed/webp/docs/cwebp)
+- `-q 75`:  cwebp's default optimization level
 
 ## Author
 9sako6

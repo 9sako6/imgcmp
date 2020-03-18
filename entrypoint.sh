@@ -24,17 +24,18 @@ function main_flow() {
     REMOTE_REPO="${4}"
     REMOTE_BRANCH="${5}"
     is_debug="${6}"
-    # clone repository for debug
+    # clone repository
     git clone "${REMOTE_REPO}" "${TARGET_DIR}"
     # make new branch
     cd "${TARGET_DIR}"
     git checkout -b "${REMOTE_BRANCH}"
     cd ..
-    # main flow
+    # run optimizer
     go run $(find / -name imgcmp.go) "${TARGET_DIR}"
     if [ ! -e "./pull_request_message.md" ]; then
         exit 0
     fi
+    # send pull request
     pull_request_message=`cat ./pull_request_message.md`
     if "${is_debug}"; then
         # check the result
