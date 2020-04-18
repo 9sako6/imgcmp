@@ -65,7 +65,7 @@ func main() {
 	wg.Wait()
 
 	// pull request
-	if (totalAfterSize - totalBeforeSize) == 0 {
+	if (totalBeforeSize - totalAfterSize) < 100 {
 		fmt.Println("images are already optimized")
 		os.Exit(0)
 	} else {
