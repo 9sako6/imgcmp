@@ -1,6 +1,9 @@
 name: "imgcmp"
-description: "A GitHub Action that automatically optimizes images in your repository. Supported image file formats: JPEG, PNG, GIF, SVG, WEBP"
+description: "Optimize images in your repository. Supported image file formats: JPEG, PNG, GIF, SVG, WEBP"
 author: "9sako6"
+branding:
+  icon: 'image'  
+  color: 'blue'
 runs:
   using: "docker"
   image: "Dockerfile"
