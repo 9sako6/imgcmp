@@ -1,4 +1,4 @@
-name: imgcmp-test
+name: CI
 on: push
 jobs:
   main-flow:

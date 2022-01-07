@@ -3,11 +3,11 @@
 <p align="center"><img src="./figs/logo.png" width="50%"></p>
 
 <p align="center">
-  <a href="https://goreportcard.com/report/github.com/9sako6/imgcmp">
-    <img src="https://goreportcard.com/badge/github.com/9sako6/imgcmp" />
+  <a href="https://github.com/9sako6/imgcmp/actions?CI">
+    <img src="https://github.com/9sako6/imgcmp/workflows/CI/badge.svg" alt="ci" />
   </a>
-  <a href="https://github.com/9sako6/imgcmp/actions?imgcmp-test">
-    <img src="https://github.com/9sako6/imgcmp/workflows/imgcmp-test/badge.svg" alt="ci" />
+  <a href="https://github.com/marketplace/actions/imgcmp">
+    <img src="https://img.shields.io/badge/Marketplace-imgcmp-blue.svg?colorA=24292e&colorB=0366d6&style=flat&longCache=true&logo=github" alt="marketplace" />
   </a>
 </p>
 
