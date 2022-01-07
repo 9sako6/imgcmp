@@ -11,11 +11,11 @@
   </a>
 </p>
 
-This [GitHub action](https://github.com/features/actions) optimizes images in your repository.
-You will receive a pull request with optimized images after your pull request.
-This Github action is inspired by [ImgBot](https://github.com/dabutvin/ImgBot).
+This GitHub Actions optimizes images in your repository.
+You will receive a pull request with optimized images at the time specified in [`on.schedule`](https://docs.github.com/en/actions/learn-github-actions/workflow-syntax-for-github-actions#onschedule).
+This Github Actions is inspired by [ImgBot](https://github.com/dabutvin/ImgBot).
 
-The pull request example:
+A pull request example:
 
 <p align="center"><img src="./figs/sample_pull_request.png" width="80%"></p>
 
@@ -25,10 +25,11 @@ To use the GitHub acion add the following lines to your `.github/workflows/imgcm
 
 ```yml
 name: imgcmp
-on: pull_request
+on:
+  schedule:
+    - cron: "0 0 * * 1" # Weekly build
 jobs:
-  build:
-    name: imgcmp
+  imgcmp:
     runs-on: ubuntu-latest
     steps:
       - uses: 9sako6/imgcmp@master
@@ -36,7 +37,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 ```
 
-Then, you will receive a pull request with optimized images after your pull request.
+Then, you will receive a pull request with optimized images every Monday at 0:00.
 
 ## Configuration
 
@@ -46,10 +47,11 @@ example:
 
 ```yml
 name: imgcmp
-on: pull_request
+on:
+  schedule:
+    - cron: "0 0 * * 1" # Weekly build
 jobs:
-  build:
-    name: imgcmp
+  imgcmp:
     runs-on: ubuntu-latest
     steps:
       - uses: 9sako6/imgcmp@master
