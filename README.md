@@ -12,16 +12,41 @@
 </p>
 
 This GitHub Actions optimizes images in your repository.
-You will receive a pull request with optimized images at the time specified in [`on.schedule`](https://docs.github.com/en/actions/learn-github-actions/workflow-syntax-for-github-actions#onschedule).
+You will receive a pull request with optimized images.
 This Github Actions is inspired by [ImgBot](https://github.com/dabutvin/ImgBot).
 
 A pull request example:
 
-<p align="center"><img src="./figs/sample_pull_request.png" width="80%"></p>
+<p align="center"><img src="./figs/sample_pull_request.png"></p>
 
 ## Usage
 
-To use the GitHub acion add the following lines to your `.github/workflows/imgcmp.yml`:
+### 1st Step
+
+You need to create a [Personal access token](https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/creating-a-personal-access-token) with those permission to open a pull request automatically.
+
+<img alt="needed repo permissions" src="./figs/needed_repo_permissions.png">
+
+Then please add the personal access token to your [repository secrets](https://docs.github.com/en/actions/security-guides/encrypted-secrets#creating-encrypted-secrets-for-a-repository) with an easily recognizable name. For example, `IMGCMP_ACCESS_TOKEN`.
+
+### 2nd step
+
+To run this GitHub Actions, please add the following lines to your `.github/workflows/imgcmp.yml`:
+
+```yml
+name: imgcmp
+on: pull_request
+jobs:
+  imgcmp:
+    if: ${{ startsWith(github.head_ref, 'actions/imgcmp/') != true }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: 9sako6/imgcmp@master
+        with:
+          token: ${{ secrets.IMGCMP_ACCESS_TOKEN }}
+```
+
+If you want to run this action only once a week, please add the following lines.
 
 ```yml
 name: imgcmp
@@ -30,34 +55,37 @@ on:
     - cron: "0 0 * * 1" # Weekly build
 jobs:
   imgcmp:
+    if: ${{ startsWith(github.head_ref, 'actions/imgcmp/') != true }}
     runs-on: ubuntu-latest
     steps:
       - uses: 9sako6/imgcmp@master
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          token: ${{ secrets.IMGCMP_ACCESS_TOKEN }}
 ```
 
 Then, you will receive a pull request with optimized images every Monday at 0:00.
 
 ## Configuration
 
-imgcmp offers an ignore option.
+### `paths-ignore-regexp`
 
-example:
+imgcmp offers an ignore option.
+`paths-ignore-regexp` is regular expression for images' paths you don't want to compress.
+
+Example:
 
 ```yml
 name: imgcmp
-on:
-  schedule:
-    - cron: "0 0 * * 1" # Weekly build
+on: pull_request
 jobs:
   imgcmp:
+    if: ${{ startsWith(github.head_ref, 'actions/imgcmp/') != true }}
     runs-on: ubuntu-latest
     steps:
       - uses: 9sako6/imgcmp@master
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          IGNORED_FILES: "public/*:posts/*.svg"
+        with:
+          token: ${{ secrets.IMGCMP_ACCESS_TOKEN }}
+          paths-ignore-regexp: "(ignore/.*)|(public/.*)"
 ```
 
 ## Supported image formats
@@ -91,6 +119,14 @@ SVGO's default configuration will be used.
 ### [cwebp](https://developers.google.com/speed/webp/docs/cwebp)
 
 - `-q 75`: cwebp's default optimization level
+
+## Benchmark
+
+It took 28 sec to create the following PR.
+
+<p align="center"><img src="./figs/actions_time.png"></p>
+
+<p align="center"><img src="./figs/sample_pull_request.png"></p>
 
 ## Author
 
