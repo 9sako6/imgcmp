@@ -1,0 +1,11 @@
+name: imgcmp
+on: push
+jobs:
+  imgcmp:
+    if: ${{ startsWith(github.head_ref, 'actions/imgcmp/') != true }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: 9sako6/imgcmp@use-personal-access-token
+        with:
+          token: ${{ secrets.IMGCMP_ACCESS_TOKEN }}
+          paths-ignore-regexp: 'figs/logo\.png'
