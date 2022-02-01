@@ -2,8 +2,282 @@ name: "imgcmp"
 description: "Optimize images in your repository. Supported image file formats: JPEG, PNG, GIF, SVG, WEBP"
 author: "9sako6"
 branding:
-  icon: 'image'  
-  color: 'blue'
+  icon: "image"
+  color: "blue"
+inputs:
+  token:
+    description: "A Personal Access Token. See https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/creating-a-personal-access-token"
+    required: true
+  paths-ignore-regexp:
+    description: "A regular expression for images' paths you don't want to compress."
+    required: false
+    default: ""
 runs:
-  using: "docker"
-  image: "Dockerfile"
+  using: "composite"
+  steps:
+    - uses: actions/setup-node@v2
+      if: ${{ startsWith(github.head_ref, 'actions/imgcmp/') != true }}
+      with:
+        node-version: "16"
+    - name: Install cwebp, gifsicle, jpegoptim, optipng, svgo
+      if: ${{ startsWith(github.head_ref, 'actions/imgcmp/') != true }}
+      shell: bash
+      run: |
+        echo "::group::Install cwebp, gifsicle, jpegoptim, optipng, svgo"
+        sudo apt-get install -y webp gifsicle jpegoptim optipng
+        npm install -g svgo
+        echo "::endgroup::"
+
+        echo "::group::cwebp"
+        cwebp -version
+        echo "::endgroup::"
+
+        echo "::group::gifsicle"
+        gifsicle --version
+        echo "::endgroup::"
+
+        echo "::group::jpegoptim"
+        jpegoptim --version
+        echo "::endgroup::"
+
+        echo "::group::optipng"
+        optipng -v
+        echo "::endgroup::"
+
+        echo "::group::svgo"
+        svgo -v
+        echo "::endgroup::"
+    - name: Get a repository information
+      if: ${{ startsWith(github.head_ref, 'actions/imgcmp/') != true }}
+      shell: bash
+      run: |
+        echo "::group::Get a repository information"
+        owner=$(echo $GITHUB_REPOSITORY | sed -E 's/\/.+//')
+        repo=$(echo $GITHUB_REPOSITORY | sed -E 's/.+\///')
+        repository_info=$(
+        curl -H "Authorization: bearer ${{ inputs.token }}" -X POST -d @- https://api.github.com/graphql << JSON
+          {
+            "query": "
+              query {
+                repository(
+                  owner: \"${owner}\",
+                  name: \"${repo}\"
+                ) {
+                  id
+                  ref(
+                    qualifiedName: \"${GITHUB_HEAD_REF}\"
+                  ) {
+                    target {
+                      oid
+                    }
+                  }
+                }
+              }"
+          }
+        JSON
+        )
+        echo ::set-output name=owner::${owner}
+        echo ::set-output name=repo::${repo}
+        echo ::set-output name=repository_id::$(echo ${repository_info} | jq -r .data.repository.id)
+        echo ::set-output name=repository_oid::$(echo ${repository_info} | jq -r .data.repository.ref.target.oid)
+        echo "::endgroup::"
+      id: github
+    # - uses: actions/checkout@v2
+    #   if: ${{ startsWith(github.head_ref, 'actions/imgcmp/') != true }}
+    #   with:
+    #     fetch-depth: 2
+    # - run: git checkout HEAD^
+    #   if: ${{ startsWith(github.head_ref, 'actions/imgcmp/') != true }}
+    #   shell: bash
+    - name: Git clone
+      if: ${{ startsWith(github.head_ref, 'actions/imgcmp/') != true }}
+      shell: bash
+      run: |
+        git clone https://${{ inputs.token }}@github.com/${GITHUB_REPOSITORY}.git
+        cd ${{ steps.github.outputs.repo }}
+        git fetch origin ${GITHUB_REF_NAME}
+        git switch ${GITHUB_REF_NAME}
+    - name: Optimize images
+      if: ${{ startsWith(github.head_ref, 'actions/imgcmp/') != true }}
+      shell: bash
+      run: |
+        echo "::group::cwebp"
+        find * -type f | grep .webp | grep -vE '${{ inputs.paths-ignore-regexp }}' | xargs -I{} cwebp {} -o {} && true
+        echo "::endgroup::"
+
+        echo "::group::gifsicle"
+        find * -type f | grep .gif | grep -vE '${{ inputs.paths-ignore-regexp }}' | xargs -I{} gifsicle -b -O3 --colors 256 {} && true
+        echo "::endgroup::"
+
+        echo "::group::optipng"
+        find * -type f | grep .png | grep -vE '${{ inputs.paths-ignore-regexp }}' | xargs -I{} optipng -o2 {} && true
+        echo "::endgroup::"
+
+        echo "::group::jpegoptim"
+        find * -type f | grep .jpg | grep -vE '${{ inputs.paths-ignore-regexp }}' | xargs -I{} jpegoptim -m85 {} && true
+        find * -type f | grep .jpeg | grep -vE '${{ inputs.paths-ignore-regexp }}' | xargs -I{} jpegoptim -m85 {} && true
+        echo "::endgroup::"
+
+        echo "::group::svgo"
+        find * -type f | grep .svg | grep -vE '${{ inputs.paths-ignore-regexp }}' | xargs -I{} svgo {} && true
+        echo "::endgroup::"
+
+        echo "::group::git diff"
+        git diff
+        echo "::endgroup::"
+    - name: Commit images
+      if: ${{ startsWith(github.head_ref, 'actions/imgcmp/') != true }}
+      shell: bash
+      run: |
+        git config --global user.name "actions/imgcmp"
+        git config --global user.email "imgcmp@example.net"
+
+        git tag v0
+
+        git add .
+
+        git commit -m "Optimize images"
+
+        sha=$(git rev-parse --short HEAD)
+        new_branch="actions/imgcmp/${sha}"
+
+        git switch -c ${new_branch}
+        git tag v1
+        echo ::set-output name=new_branch::${new_branch}
+      id: commit
+    - name: Measure files' size
+      if: ${{ startsWith(github.head_ref, 'actions/imgcmp/') != true }}
+      shell: bash
+      run: |
+        changed_files=$(ls -l $(git diff v0 v1 --name-only) | awk '{print $9}')
+
+        if [ -z ${changed_files} ]; then
+          echo 'Images are already optimized.'
+          echo ::set-output name=skip::1
+          exit 0
+        fi
+
+        echo "::group::Before size"
+        git checkout v0
+        before_bytes=$(ls -l $(echo $changed_files) | awk '{print $5}')
+        echo "::endgroup::"
+
+        echo "::group::After size"
+        git checkout v1
+        after_bytes=$(ls -l $(echo $changed_files) | awk '{print $5}')
+        echo "::endgroup::"
+
+        export changed_files
+        export before_bytes
+        export after_bytes
+
+        message=$(node << JS
+          const byte2unit = (byte) => {
+            if (byte < 0) return '-';
+            if (byte >= 1024 * 1024 * 1024) {
+              return (byte / (1024 * 1024 * 1024)).toFixed(2) + ' GiB';
+            } else if (byte >= 1024 * 1024) {
+              return (byte / (1024 * 1024)).toFixed(2) + ' MiB';
+            } else if (byte >= 1024) {
+              return (byte / 1024).toFixed(2) + ' KiB';
+            } else {
+              return byte + ' B';
+            }
+          }
+          const files = process.env.changed_files.split('\n');
+          const beforeBytes = process.env.before_bytes.split('\n').map(str => Number(str));
+          const afterBytes = process.env.after_bytes.split('\n').map(str => Number(str));
+
+          const accumulator = (prev, next) => prev + next;
+          const totalBeforeByte = beforeBytes.reduce(accumulator);
+          const totalAfterByte = afterBytes.reduce(accumulator);
+          const totalDiffRate = 1 - totalAfterByte / totalBeforeByte;
+          const totalDiffPercent = (totalDiffRate * 100).toFixed(2) + '%';
+
+          const tableBody = files.map((fileName, index) => {
+            const diffRate = 1 - afterBytes[index] / beforeBytes[index];
+
+            return '' +
+              '<tr>' +
+              '  <td>' + fileName + '</td>' +
+              '  <td>' + byte2unit(beforeBytes[index]) + '</td>' +
+              '  <td>' + byte2unit(afterBytes[index]) + '</td>' +
+              '  <td>' + (-100 * diffRate).toFixed(2) + '%' + '</td>' +
+              '</tr>';
+          }).join('');
+          const message = 'Optimize images (reduced by ' + totalDiffPercent + ')' +
+            '\n' +
+            '<table>' +
+            '  <tr>' +
+            '    <th>File name</th>' +
+            '    <th>Before</th>' +
+            '    <th>After</th>' +
+            '    <th>Diff (rate)</th>' +
+            '  </tr>' +
+            tableBody +
+            '  <tr><td></td><td></td><td></td><td></td></tr>' +
+            '  <tr>' +
+            '    <td>Total</td>' +
+            '    <td>' + byte2unit(totalBeforeByte) + '</td>' +
+            '    <td>' + byte2unit(totalAfterByte) + '</td>' +
+            '    <td>' + '-' + totalDiffPercent + '</td>' +
+            '  </tr>' +
+            '</table>' +
+            '\n' +
+            'This Pull Request is created by GitHub Actions ([9sako6/imgcmp](https://github.com/9sako6/imgcmp)).'
+            ;
+          console.log(message);
+        JS
+        )
+
+        title=$(cat << EOS | head -n 1
+        ${message}
+        EOS
+        )
+
+        git switch ${{ steps.commit.outputs.new_branch }}
+
+        cat << EOS
+        ${message}
+        EOS
+
+        echo ::set-output name=message::${message}
+        echo ::set-output name=title::${title}
+      id: template
+    - name: Edit the commit message.
+      if: ${{ startsWith(github.head_ref, 'actions/imgcmp/') != true }}
+      shell: bash
+      run: |
+        git switch ${{ steps.commit.outputs.new_branch }}
+        git commit --amend -m '${{ steps.template.outputs.title }}'
+    - name: Create a pull request
+      if: ${{ startsWith(github.head_ref, 'actions/imgcmp/') != true }}
+      shell: bash
+      run: |
+        echo '--'
+        echo ${GITHUB_HEAD_REF}
+        echo ${GITHUB_REF_NAME}
+        echo '--'
+        git switch ${{ steps.commit.outputs.new_branch }}
+        git push https://${{ inputs.token }}@github.com/${GITHUB_REPOSITORY}.git
+
+        curl -H "Authorization: bearer ${{ inputs.token }}" -X POST -d @- https://api.github.com/graphql << JSON
+          {
+            "query": "
+              mutation {
+                createPullRequest(
+                  input: {
+                    repositoryId: \"${{ steps.github.outputs.repository_id }}\"
+                    baseRefName: \"${GITHUB_REF_NAME}\"
+                    headRefName: \"${{ steps.github.outputs.owner }}:${{ steps.commit.outputs.new_branch }}\"
+                    title: \"${{ steps.template.outputs.title }}\"
+                    body: \"${{ steps.template.outputs.message }}\"
+                  }
+                ) {
+                  pullRequest {
+                    id
+                  }
+                }
+              }"
+          }
+        JSON
