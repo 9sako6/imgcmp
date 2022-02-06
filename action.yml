@@ -214,7 +214,17 @@ runs:
         echo ${GITHUB_REF}
         echo ${GITHUB_REF_NAME}
         echo ${GITHUB_HEAD_REF}
+        if [ -n "${GITHUB_HEAD_REF}" ]; then
+          # NOTE: ${GITHUB_HEAD_REF} exists when trigger event is pull_request.
+          base_ref_name=${GITHUB_HEAD_REF}
+          echo 'GITHUB_HEAD_REF exists'
+        else
+          # NOTE: ${GITHUB_HEAD_REF} is empty when trigger event is push.
+          base_ref_name=${GITHUB_REF_NAME}
+          echo 'GITHUB_HEAD_REF is empty'
+        fi
         echo '${{ steps.github.outputs.repository_id }}'
+        echo ${base_ref_name}
         echo '${{ toJSON(github) }}'
         echo '---'
         git switch ${{ steps.commit.outputs.new_branch }}
@@ -226,7 +236,7 @@ runs:
                 createPullRequest(
                   input: {
                     repositoryId: \"${{ steps.github.outputs.repository_id }}\"
-                    baseRefName: \"${GITHUB_REF_NAME}\"
+                    baseRefName: \"${base_ref_name}\"
                     headRefName: \"${{ steps.github.outputs.owner }}:${{ steps.commit.outputs.new_branch }}\"
                     title: \"${{ steps.template.outputs.title }}\"
                     body: \"${{ steps.template.outputs.message }}\"
