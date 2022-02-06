@@ -41,7 +41,7 @@ jobs:
     if: ${{ startsWith(github.head_ref, 'actions/imgcmp/') != true }}
     runs-on: ubuntu-latest
     steps:
-      - uses: 9sako6/imgcmp@master
+      - uses: 9sako6/imgcmp@v2.0.0
         with:
           token: ${{ secrets.IMGCMP_ACCESS_TOKEN }}
 ```
@@ -58,7 +58,7 @@ jobs:
     if: ${{ startsWith(github.head_ref, 'actions/imgcmp/') != true }}
     runs-on: ubuntu-latest
     steps:
-      - uses: 9sako6/imgcmp@master
+      - uses: 9sako6/imgcmp@v2.0.0
         with:
           token: ${{ secrets.IMGCMP_ACCESS_TOKEN }}
 ```
@@ -82,7 +82,7 @@ jobs:
     if: ${{ startsWith(github.head_ref, 'actions/imgcmp/') != true }}
     runs-on: ubuntu-latest
     steps:
-      - uses: 9sako6/imgcmp@master
+      - uses: 9sako6/imgcmp@v2.0.0
         with:
           token: ${{ secrets.IMGCMP_ACCESS_TOKEN }}
           paths-ignore-regexp: "(ignore/.*)|(public/.*)"
@@ -127,6 +127,20 @@ It took 28 sec to create the following PR.
 <p align="center"><img src="./figs/actions_time.png"></p>
 
 <p align="center"><img src="./figs/sample_pull_request.png"></p>
+
+## Change Log
+
+### `v2.0.0` (February 6, 2022)
+
+There are breaking changes from version `1.0.1`.
+
+- Use a Personal access token instead of `GITHUB_TOKEN` (https://github.com/9sako6/imgcmp/pull/26)
+  - `GITHUB_TOKEN` didn't have enough authority.
+- Add `token` input (https://github.com/9sako6/imgcmp/pull/26)
+  - `GITHUB_TOKEN` option in `env` was deleted.
+- Add `paths-ignore-regexp` input (https://github.com/9sako6/imgcmp/pull/26)
+  - `IGNORED_FILES` option in `env` was deleted.
+- Refactoring the pull request template (https://github.com/9sako6/imgcmp/pull/26)
 
 ## Author
 
