@@ -128,6 +128,20 @@ It took 28 sec to create the following PR.
 
 <p align="center"><img src="./figs/sample_pull_request.png"></p>
 
+## Changelog
+
+### v2.0.0 (February 6, 2022)
+
+There are breaking changes from version `1.0.1`.
+
+- Use a Personal access token instead of `GITHUB_TOKEN` (https://github.com/9sako6/imgcmp/pull/26)
+  - `GITHUB_TOKEN` didn't have enough authority.
+- Add `token` input (https://github.com/9sako6/imgcmp/pull/26)
+  - `GITHUB_TOKEN` option in `env` was deleted.
+- Add `paths-ignore-regexp` input (https://github.com/9sako6/imgcmp/pull/26)
+  - `IGNORED_FILES` option in `env` was deleted.
+- Refactoring the pull request template (https://github.com/9sako6/imgcmp/pull/26)
+
 ## Author
 
 9sako6
