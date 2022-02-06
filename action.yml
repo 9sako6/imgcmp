@@ -47,8 +47,8 @@ runs:
       shell: bash
       run: |
         echo "::group::Get a repository information"
-        owner=$(echo $GITHUB_REPOSITORY | sed -E 's/\/.+//')
-        repo=$(echo $GITHUB_REPOSITORY | sed -E 's/.+\///')
+        owner=$(echo ${GITHUB_REPOSITORY} | sed -E 's/\/.+//')
+        repo=$(echo ${GITHUB_REPOSITORY} | sed -E 's/.+\///')
         repository_info=$(
         curl -H "Authorization: bearer ${{ inputs.token }}" -X POST -d @- https://api.github.com/graphql << JSON
           {
@@ -210,6 +210,13 @@ runs:
       if: ${{ startsWith(github.head_ref, 'actions/imgcmp/') != true }}
       shell: bash
       run: |
+        echo '---'
+        echo ${GITHUB_REF}
+        echo ${GITHUB_REF_NAME}
+        echo ${GITHUB_HEAD_REF}
+        echo '${{ steps.github.outputs.repository_id }}'
+        echo '${{ toJSON(github) }}'
+        echo '---'
         git switch ${{ steps.commit.outputs.new_branch }}
         git push https://${{ inputs.token }}@github.com/${GITHUB_REPOSITORY}.git
         curl -H "Authorization: bearer ${{ inputs.token }}" -X POST -d @- https://api.github.com/graphql << JSON
