@@ -99,13 +99,28 @@ runs:
         echo "::group::svgo"
         find * -type f | grep .svg | grep -vE '${{ inputs.paths-ignore-regexp }}' | xargs -I{} svgo {} && true
         echo "::endgroup::"
-        echo "::group::git diff"
-        git diff --name-only
-        echo "::endgroup::"
+    - name: Check if images were compressed
+      if: ${{ startsWith(github.head_ref, 'actions/imgcmp/') != true }}
+      shell: bash
+      run: |
+        if [ -z "$(git diff --name-only)" ]; then
+          echo 'There was no change in all the images.'
+          echo "::set-output name=no_change::true"
+        else
+          echo "::group::git diff"
+          git diff --name-only
+          echo "::endgroup::"
+        fi
+      id: diff
     - name: Commit images
       if: ${{ startsWith(github.head_ref, 'actions/imgcmp/') != true }}
       shell: bash
       run: |
+        if [ -n "${{ steps.diff.outputs.no_change }}" ]; then
+          echo 'This step is skipped.'
+          exit 0
+        fi
+
         git config --global user.name "actions/imgcmp"
         git config --global user.email "imgcmp@example.net"
         git tag v0
