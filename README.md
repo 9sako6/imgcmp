@@ -11,9 +11,9 @@
   </a>
 </p>
 
-This GitHub Actions optimizes images in your repository.
-You will receive a pull request with optimized images.
-This Github Actions is inspired by [ImgBot](https://github.com/dabutvin/ImgBot).
+This GitHub Actions optimizes images in your repository. You will receive a pull
+request with optimized images. This Github Actions is inspired by
+[ImgBot](https://github.com/dabutvin/ImgBot).
 
 A pull request example:
 
@@ -23,15 +23,20 @@ A pull request example:
 
 ### 1st Step
 
-You need to create a [Personal access token](https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/creating-a-personal-access-token) with those permission to open a pull request automatically.
+You need to create a
+[Personal access token](https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/creating-a-personal-access-token)
+with those permission to open a pull request automatically.
 
 <img alt="needed repo permissions" src="./figs/needed_repo_permissions.png">
 
-Then please add the personal access token to your [repository secrets](https://docs.github.com/en/actions/security-guides/encrypted-secrets#creating-encrypted-secrets-for-a-repository) with an easily recognizable name. For example, `IMGCMP_ACCESS_TOKEN`.
+Then please add the personal access token to your
+[repository secrets](https://docs.github.com/en/actions/security-guides/encrypted-secrets#creating-encrypted-secrets-for-a-repository)
+with an easily recognizable name. For example, `IMGCMP_ACCESS_TOKEN`.
 
 ### 2nd step
 
-To run this GitHub Actions, please add the following lines to your `.github/workflows/imgcmp.yml`:
+To run this GitHub Actions, please add the following lines to your
+`.github/workflows/imgcmp.yml`:
 
 ```yml
 name: imgcmp
@@ -63,14 +68,15 @@ jobs:
           token: ${{ secrets.IMGCMP_ACCESS_TOKEN }}
 ```
 
-Then, you will receive a pull request with optimized images every Monday at 0:00.
+Then, you will receive a pull request with optimized images every Monday at
+0:00.
 
 ## Configuration
 
 ### `paths-ignore-regexp`
 
-imgcmp offers an ignore option.
-`paths-ignore-regexp` is regular expression for images' paths you don't want to compress.
+imgcmp offers an ignore option. `paths-ignore-regexp` is regular expression for
+images' paths you don't want to compress.
 
 Example:
 
@@ -134,13 +140,15 @@ It took 28 sec to create the following PR.
 
 There are breaking changes from version `1.0.1`.
 
-- Use a Personal access token instead of `GITHUB_TOKEN` (https://github.com/9sako6/imgcmp/pull/26)
+- Use a Personal access token instead of `GITHUB_TOKEN`
+  (https://github.com/9sako6/imgcmp/pull/26)
   - `GITHUB_TOKEN` didn't have enough authority.
 - Add `token` input (https://github.com/9sako6/imgcmp/pull/26)
   - `GITHUB_TOKEN` option in `env` was deleted.
 - Add `paths-ignore-regexp` input (https://github.com/9sako6/imgcmp/pull/26)
   - `IGNORED_FILES` option in `env` was deleted.
-- Refactoring the pull request template (https://github.com/9sako6/imgcmp/pull/26)
+- Refactoring the pull request template
+  (https://github.com/9sako6/imgcmp/pull/26)
 
 ## Author
 

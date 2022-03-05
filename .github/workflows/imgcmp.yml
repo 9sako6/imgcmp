@@ -7,5 +7,5 @@ jobs:
     steps:
       - uses: 9sako6/imgcmp@use-create-pull-request-action
         with:
-          token: ${{ secrets.IMGCMP_ACCESS_TOKEN }}
+          token: ${{ secrets.GITHUB_TOKEN }}
           paths-ignore-regexp: 'figs/logo\.png'
