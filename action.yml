@@ -92,7 +92,7 @@ runs:
         git commit -m "Optimize images"
         sha=$(git rev-parse --short HEAD)
         new_branch="actions/imgcmp/${sha}"
-        git switch -c ${new_branch}
+        # git switch -c ${new_branch}
         git tag v1
         echo ::set-output name=new_branch::${new_branch}
       id: commit
@@ -184,7 +184,7 @@ runs:
         ${message}
         EOS
         )
-        git switch ${{ steps.commit.outputs.new_branch }}
+        # git switch ${{ steps.commit.outputs.new_branch }}
         cat << EOS
         ${message}
         EOS
