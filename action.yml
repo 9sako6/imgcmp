@@ -100,7 +100,7 @@ runs:
     - name: Sample
       shell: bash
       run: |
-        node -e $(curl https://raw.githubusercontent.com/9sako6/imgcmp/use-create-pull-request-action/index.js)
+        node -e "$(curl https://raw.githubusercontent.com/9sako6/imgcmp/use-create-pull-request-action/index.js)"
     # - name: Commit images
     #   if: ${{ startsWith(github.head_ref, 'actions/imgcmp/') != true }}
     #   shell: bash
