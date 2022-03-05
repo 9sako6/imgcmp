@@ -93,7 +93,7 @@ runs:
         sha=$(git rev-parse --short HEAD)
         new_branch="actions/imgcmp/${sha}"
         # git switch -c ${new_branch}
-        git tag v1
+        # git tag v1
         echo ::set-output name=sha::${sha}
         echo ::set-output name=new_branch::${new_branch}
       id: commit
@@ -106,94 +106,6 @@ runs:
     #     git add .
     #     git commit -m "Optimize images"
     #   id: commit
-    - name: Measure files' size
-      if: ${{ startsWith(github.head_ref, 'actions/imgcmp/') != true }}
-      shell: bash
-      run: |
-        if [ -n "${{ steps.diff.outputs.no_change }}" ]; then
-          echo 'This step is skipped.'
-          exit 0
-        fi
-        changed_files=$(ls -l $(git diff v0 v1 --name-only) | awk '{print $9}')
-        echo "::group::Before size"
-        git checkout v0
-        before_bytes=$(ls -l $(echo $changed_files) | awk '{print $5}')
-        echo "::endgroup::"
-        echo "::group::After size"
-        git checkout v1
-        after_bytes=$(ls -l $(echo $changed_files) | awk '{print $5}')
-        echo "::endgroup::"
-        export changed_files
-        export before_bytes
-        export after_bytes
-        message=$(node << JS
-          const byte2unit = (byte) => {
-            if (byte < 0) return '-';
-            if (byte >= 1024 * 1024 * 1024) {
-              return (byte / (1024 * 1024 * 1024)).toFixed(2) + ' GiB';
-            } else if (byte >= 1024 * 1024) {
-              return (byte / (1024 * 1024)).toFixed(2) + ' MiB';
-            } else if (byte >= 1024) {
-              return (byte / 1024).toFixed(2) + ' KiB';
-            } else {
-              return byte + ' B';
-            }
-          }
-          const files = process.env.changed_files.split('\n');
-          const beforeBytes = process.env.before_bytes.split('\n').map(str => Number(str));
-          const afterBytes = process.env.after_bytes.split('\n').map(str => Number(str));
-          const accumulator = (prev, next) => prev + next;
-          const totalBeforeByte = beforeBytes.reduce(accumulator);
-          const totalAfterByte = afterBytes.reduce(accumulator);
-          const totalDiffRate = 1 - totalAfterByte / totalBeforeByte;
-          const totalDiffPercent = (totalDiffRate * 100).toFixed(2) + '%';
-          const tableBody = files.map((fileName, index) => {
-            const diffRate = 1 - afterBytes[index] / beforeBytes[index];
-            return '' +
-              '<tr>' +
-              '  <td>' + fileName + '</td>' +
-              '  <td>' + byte2unit(beforeBytes[index]) + '</td>' +
-              '  <td>' + byte2unit(afterBytes[index]) + '</td>' +
-              '  <td>' + (-100 * diffRate).toFixed(2) + '%' + '</td>' +
-              '</tr>';
-          }).join('');
-          const message = 'Optimize images (reduced by ' + totalDiffPercent + ')' +
-            '\n' +
-            '<table>' +
-            '  <tr>' +
-            '    <th>File name</th>' +
-            '    <th>Before</th>' +
-            '    <th>After</th>' +
-            '    <th>Diff (rate)</th>' +
-            '  </tr>' +
-            tableBody +
-            '  <tr><td></td><td></td><td></td><td></td></tr>' +
-            '  <tr>' +
-            '    <td>Total</td>' +
-            '    <td>' + byte2unit(totalBeforeByte) + '</td>' +
-            '    <td>' + byte2unit(totalAfterByte) + '</td>' +
-            '    <td>' + '-' + totalDiffPercent + '</td>' +
-            '  </tr>' +
-            '</table>' +
-            '\n' +
-            'This Pull Request is created by GitHub Actions ([9sako6/imgcmp](https://github.com/9sako6/imgcmp)).'
-            ;
-          console.log(message);
-        JS
-        )
-        title=$(cat << EOS | head -n 1
-        ${message}
-        EOS
-        )
-        # git switch ${{ steps.commit.outputs.new_branch }}
-        git switch ${{ github.head_ref }}
-        git cherry-pick ${{ steps.commit.outputs.sha }}
-        cat << EOS
-        ${message}
-        EOS
-        echo ::set-output name=message::${message}
-        echo ::set-output name=title::${title}
-      id: template
     # - name: Edit the commit message.
     #   if: ${{ startsWith(github.head_ref, 'actions/imgcmp/') != true }}
     #   shell: bash
@@ -209,10 +121,9 @@ runs:
       uses: peter-evans/create-pull-request@v3
       with:
         token: ${{ inputs.token }}
-        commit-message: ${{ steps.template.outputs.message }}
         committer: GitHub <noreply@github.com>
         author: ${{ github.actor }} <${{ github.actor }}@users.noreply.github.com>
         branch: ${{ steps.commit.outputs.new_branch }}
-        title: ${{ steps.template.outputs.title }}
-        body: ${{ steps.template.outputs.message }}
+        title: 'Auto PR'
+        body: 'This is a sample pull request.'
         draft: false
