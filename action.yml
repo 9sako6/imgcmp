@@ -19,6 +19,11 @@ runs:
       if: ${{ startsWith(github.head_ref, 'actions/imgcmp/') != true }}
       with:
         node-version: "16"
+    - name: Install deno
+      shell: bash
+      if: ${{ startsWith(github.head_ref, 'actions/imgcmp/') != true }}
+      run: |
+        curl -fsSL https://deno.land/install.sh | sh
     - name: Install cwebp, gifsicle, jpegoptim, optipng, svgo
       if: ${{ startsWith(github.head_ref, 'actions/imgcmp/') != true }}
       shell: bash
@@ -26,44 +31,61 @@ runs:
         echo "::group::Install cwebp, gifsicle, jpegoptim, optipng, svgo"
         sudo apt-get install -y webp gifsicle jpegoptim optipng
         npm install -g svgo
-        echo "::endgroup::"
-        echo "::group::cwebp"
         cwebp -version
-        echo "::endgroup::"
-        echo "::group::gifsicle"
         gifsicle --version
-        echo "::endgroup::"
-        echo "::group::jpegoptim"
         jpegoptim --version
-        echo "::endgroup::"
-        echo "::group::optipng"
         optipng -v
-        echo "::endgroup::"
-        echo "::group::svgo"
         svgo -v
-        echo "::endgroup::"
     - uses: actions/checkout@v2
       if: ${{ startsWith(github.head_ref, 'actions/imgcmp/') != true }}
+    - name: Export images' statistics in json before optimization
+      if: ${{ startsWith(github.head_ref, 'actions/imgcmp/') != true }}
+      shell: bash
+      run: |
+        /home/runner/.deno/bin/deno run \
+          --allow-read \
+          --allow-write \
+          https://raw.githubusercontent.com/9sako6/imgcmp/use-create-pull-request-action/src/export_stat.ts \
+          '${{ inputs.paths-ignore-regexp }}' \
+          '/tmp/imgcmp-stat.json'
     - name: Optimize images
       if: ${{ startsWith(github.head_ref, 'actions/imgcmp/') != true }}
       shell: bash
       run: |
-        echo "::group::cwebp"
-        find * -type f | grep .webp | grep -vE '${{ inputs.paths-ignore-regexp }}' | xargs -I{} cwebp {} -o {} && true
-        echo "::endgroup::"
-        echo "::group::gifsicle"
-        find * -type f | grep .gif | grep -vE '${{ inputs.paths-ignore-regexp }}' | xargs -I{} gifsicle -b -O3 --colors 256 {} && true
-        echo "::endgroup::"
-        echo "::group::optipng"
-        find * -type f | grep .png | grep -vE '${{ inputs.paths-ignore-regexp }}' | xargs -I{} optipng -o2 {} && true
-        echo "::endgroup::"
-        echo "::group::jpegoptim"
-        find * -type f | grep .jpg | grep -vE '${{ inputs.paths-ignore-regexp }}' | xargs -I{} jpegoptim -m85 {} && true
-        find * -type f | grep .jpeg | grep -vE '${{ inputs.paths-ignore-regexp }}' | xargs -I{} jpegoptim -m85 {} && true
-        echo "::endgroup::"
-        echo "::group::svgo"
-        find * -type f | grep .svg | grep -vE '${{ inputs.paths-ignore-regexp }}' | xargs -I{} svgo {} && true
-        echo "::endgroup::"
+        /home/runner/.deno/bin/deno run \
+          --allow-read \
+          --allow-run \
+          https://raw.githubusercontent.com/9sako6/imgcmp/use-create-pull-request-action/src/optimize.ts \
+          '${{ inputs.paths-ignore-regexp }}'
+    - name: Export images' statistics in json after optimization
+      if: ${{ startsWith(github.head_ref, 'actions/imgcmp/') != true }}
+      shell: bash
+      run: |
+        /home/runner/.deno/bin/deno run \
+          --allow-read \
+          --allow-write \
+          https://raw.githubusercontent.com/9sako6/imgcmp/use-create-pull-request-action/src/export_stat.ts \
+          '${{ inputs.paths-ignore-regexp }}' \
+          '/tmp/imgcmp-stat.json'
+    - name: Export images' statistics in json after optimization
+      if: ${{ startsWith(github.head_ref, 'actions/imgcmp/') != true }}
+      shell: bash
+      run: |
+        message=$(/home/runner/.deno/bin/deno run \
+          --allow-read \
+          https://raw.githubusercontent.com/9sako6/imgcmp/use-create-pull-request-action/src/show_stat_message.ts \
+          '/tmp/imgcmp-stat.json'
+        )
+
+        title=$(/home/runner/.deno/bin/deno run \
+          --allow-read \
+          https://raw.githubusercontent.com/9sako6/imgcmp/use-create-pull-request-action/src/show_stat_title.ts \
+          '/tmp/imgcmp-stat.json'
+        )
+
+        echo ::set-output name=message::${message}
+        echo ::set-output name=title::${title}
+      id: template
     - name: Check if images were compressed
       if: ${{ startsWith(github.head_ref, 'actions/imgcmp/') != true }}
       shell: bash
@@ -85,49 +107,33 @@ runs:
           echo 'This step is skipped.'
           exit 0
         fi
+
         git config --local user.name "GitHub"
         git config --local user.email "noreply@github.com"
-        git tag v0
         git add .
-        git commit -m "Optimize images"
+        git commit -m "Optimize images by imgcmp action"
+
         sha=$(git rev-parse --short HEAD)
         new_branch="actions/imgcmp/${sha}"
-        # git switch -c ${new_branch}
-        # git tag v1
+
         echo ::set-output name=sha::${sha}
         echo ::set-output name=new_branch::${new_branch}
       id: commit
-    - name: Sample
-      shell: bash
+    - shell: bash
       run: |
-        node -e "$(curl https://raw.githubusercontent.com/9sako6/imgcmp/use-create-pull-request-action/index.js)"
-    # - name: Commit images
-    #   if: ${{ startsWith(github.head_ref, 'actions/imgcmp/') != true }}
-    #   shell: bash
-    #   run: |
-    #     git config --local user.name "GitHub"
-    #     git config --local user.email "noreply@github.com"
-    #     git add .
-    #     git commit -m "Optimize images"
-    #   id: commit
-    # - name: Edit the commit message.
-    #   if: ${{ startsWith(github.head_ref, 'actions/imgcmp/') != true }}
-    #   shell: bash
-    #   run: |
-    #     if [ -n "${{ steps.diff.outputs.no_change }}" ]; then
-    #       echo 'This step is skipped.'
-    #       exit 0
-    #     fi
-    #     git switch ${{ steps.commit.outputs.new_branch }}
-    #     git commit --amend -m '${{ steps.template.outputs.title }}'
+        echo ${{ github.action }}
+        echo ${{ github.action_ref }}
+        echo ${{ github.github.github.action_path }}
+        echo ${{ github.github.action_repository }}
+
     - name: Create a pull request
       if: ${{ startsWith(github.head_ref, 'actions/imgcmp/') != true }}
-      uses: peter-evans/create-pull-request@v3
+      uses: peter-evans/create-pull-request@v3.14.0
       with:
         token: ${{ inputs.token }}
         committer: GitHub <noreply@github.com>
         author: ${{ github.actor }} <${{ github.actor }}@users.noreply.github.com>
         branch: ${{ steps.commit.outputs.new_branch }}
-        title: 'Auto PR'
-        body: 'This is a sample pull request.'
+        title: ${{ steps.template.outputs.title }}
+        body: ${{ steps.template.outputs.message }}
         draft: false
