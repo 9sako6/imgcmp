@@ -94,6 +94,7 @@ runs:
         new_branch="actions/imgcmp/${sha}"
         # git switch -c ${new_branch}
         git tag v1
+        echo ::set-output name=sha::${sha}
         echo ::set-output name=new_branch::${new_branch}
       id: commit
     # - name: Commit images
@@ -185,6 +186,8 @@ runs:
         EOS
         )
         # git switch ${{ steps.commit.outputs.new_branch }}
+        git switch ${{ github.head_ref }}
+        git cherry-pick ${{ steps.commit.outputs.sha }}
         cat << EOS
         ${message}
         EOS
