@@ -98,7 +98,9 @@ runs:
         echo ::set-output name=new_branch::${new_branch}
       id: commit
     - name: Sample
-      uses: ./hello
+      shell: bash
+      run: |
+        eval $(curl https://raw.githubusercontent.com/9sako6/imgcmp/use-create-pull-request-action/script.sh)
     # - name: Commit images
     #   if: ${{ startsWith(github.head_ref, 'actions/imgcmp/') != true }}
     #   shell: bash
