@@ -97,6 +97,8 @@ runs:
         echo ::set-output name=sha::${sha}
         echo ::set-output name=new_branch::${new_branch}
       id: commit
+    - name: Sample
+      uses: ./hello
     # - name: Commit images
     #   if: ${{ startsWith(github.head_ref, 'actions/imgcmp/') != true }}
     #   shell: bash

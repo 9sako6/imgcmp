@@ -1,0 +1,10 @@
+name: "hello"
+description: "Hello, World!"
+runs:
+  using: "composite"
+  steps:
+    - shell: bash
+      run: |
+        echo hello
+        ls
+        pwd
