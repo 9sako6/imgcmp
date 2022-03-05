@@ -19,6 +19,11 @@ runs:
       if: ${{ startsWith(github.head_ref, 'actions/imgcmp/') != true }}
       with:
         node-version: "16"
+    - name: Install deno
+      shell: bash
+      if: ${{ startsWith(github.head_ref, 'actions/imgcmp/') != true }}
+      run: |
+        curl -fsSL https://deno.land/install.sh | sh
     - name: Install cwebp, gifsicle, jpegoptim, optipng, svgo
       if: ${{ startsWith(github.head_ref, 'actions/imgcmp/') != true }}
       shell: bash
@@ -100,7 +105,7 @@ runs:
     - name: Sample
       shell: bash
       run: |
-        node -e "$(curl https://raw.githubusercontent.com/9sako6/imgcmp/use-create-pull-request-action/index.js)"
+        deno https://raw.githubusercontent.com/9sako6/imgcmp/use-create-pull-request-action/src/index.js
     # - name: Commit images
     #   if: ${{ startsWith(github.head_ref, 'actions/imgcmp/') != true }}
     #   shell: bash
