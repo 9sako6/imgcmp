@@ -24,6 +24,8 @@ runs:
       if: ${{ startsWith(github.head_ref, 'actions/imgcmp/') != true }}
       run: |
         curl -fsSL https://deno.land/install.sh | sh
+        export DENO_INSTALL="/home/runner/.deno"
+        export PATH="$DENO_INSTALL/bin:$PATH"
     - name: Install cwebp, gifsicle, jpegoptim, optipng, svgo
       if: ${{ startsWith(github.head_ref, 'actions/imgcmp/') != true }}
       shell: bash
