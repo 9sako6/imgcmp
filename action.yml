@@ -48,7 +48,6 @@ runs:
           https://raw.githubusercontent.com/9sako6/imgcmp/use-create-pull-request-action/src/export_stat.ts \
           '${{ inputs.paths-ignore-regexp }}' \
           '/tmp/imgcmp-stat.json'
-        cat '/tmp/imgcmp-stat.json'
     - name: Optimize images
       if: ${{ startsWith(github.head_ref, 'actions/imgcmp/') != true }}
       shell: bash
@@ -68,7 +67,6 @@ runs:
           https://raw.githubusercontent.com/9sako6/imgcmp/use-create-pull-request-action/src/export_stat.ts \
           '${{ inputs.paths-ignore-regexp }}' \
           '/tmp/imgcmp-stat.json'
-        cat '/tmp/imgcmp-stat.json'
     - name: Export images' statistics in json after optimization
       if: ${{ startsWith(github.head_ref, 'actions/imgcmp/') != true }}
       shell: bash
@@ -78,14 +76,8 @@ runs:
           https://raw.githubusercontent.com/9sako6/imgcmp/use-create-pull-request-action/src/show_stat_message.ts \
           '/tmp/imgcmp-stat.json'
         )
-        title=$(cat << EOS | head -n 1
-        ${message}
-        EOS
-        )
-        echo $message
-        echo $title
+
         echo ::set-output name=message::${message}
-        echo ::set-output name=title::${title}
       id: template
     - name: Check if images were compressed
       if: ${{ startsWith(github.head_ref, 'actions/imgcmp/') != true }}
@@ -108,15 +100,15 @@ runs:
           echo 'This step is skipped.'
           exit 0
         fi
+
         git config --local user.name "GitHub"
         git config --local user.email "noreply@github.com"
-        git tag v0
         git add .
         git commit -m "Optimize images by imgcmp action"
+
         sha=$(git rev-parse --short HEAD)
         new_branch="actions/imgcmp/${sha}"
-        # git switch -c ${new_branch}
-        # git tag v1
+
         echo ::set-output name=sha::${sha}
         echo ::set-output name=new_branch::${new_branch}
       id: commit
