@@ -49,7 +49,7 @@ runs:
         echo "::endgroup::"
     - uses: actions/checkout@v2
       if: ${{ startsWith(github.head_ref, 'actions/imgcmp/') != true }}
-    - name: Export images' statistics in json
+    - name: Export images' statistics in json before optimization
       if: ${{ startsWith(github.head_ref, 'actions/imgcmp/') != true }}
       shell: bash
       run: |
@@ -68,7 +68,18 @@ runs:
           --allow-read \
           --allow-run \
           https://raw.githubusercontent.com/9sako6/imgcmp/use-create-pull-request-action/src/optimize.ts \
+          '${{ inputs.paths-ignore-regexp }}'
+    - name: Export images' statistics in json after optimization
+      if: ${{ startsWith(github.head_ref, 'actions/imgcmp/') != true }}
+      shell: bash
+      run: |
+        /home/runner/.deno/bin/deno run \
+          --allow-read \
+          --allow-write \
+          https://raw.githubusercontent.com/9sako6/imgcmp/use-create-pull-request-action/src/export_stat.ts \
           '${{ inputs.paths-ignore-regexp }}' \
+          '/tmp/imgcmp-stat.json'
+        cat '/tmp/imgcmp-stat.json'
     - name: Check if images were compressed
       if: ${{ startsWith(github.head_ref, 'actions/imgcmp/') != true }}
       shell: bash
