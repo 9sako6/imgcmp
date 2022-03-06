@@ -77,7 +77,14 @@ runs:
           '/tmp/imgcmp-stat.json'
         )
 
+        title=$(/home/runner/.deno/bin/deno run \
+          --allow-read \
+          https://raw.githubusercontent.com/9sako6/imgcmp/use-create-pull-request-action/src/show_stat_title.ts \
+          '/tmp/imgcmp-stat.json'
+        )
+
         echo ::set-output name=message::${message}
+        echo ::set-output name=title::${title}
       id: template
     - name: Check if images were compressed
       if: ${{ startsWith(github.head_ref, 'actions/imgcmp/') != true }}
@@ -120,6 +127,6 @@ runs:
         committer: GitHub <noreply@github.com>
         author: ${{ github.actor }} <${{ github.actor }}@users.noreply.github.com>
         branch: ${{ steps.commit.outputs.new_branch }}
-        title: "Optimize images by imgcmp action"
+        title: ${{ steps.template.outputs.title }}
         body: ${{ steps.template.outputs.message }}
         draft: false
