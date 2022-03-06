@@ -36,7 +36,7 @@ runs:
       if: ${{ startsWith(github.head_ref, 'actions/imgcmp/') != true }}
       shell: bash
       run: |
-        /home/runner/.deno/bin/deno run \
+        deno run \
           --allow-read \
           --allow-write \
           https://raw.githubusercontent.com/9sako6/imgcmp/use-create-pull-request-action/src/export_stat.ts \
@@ -46,7 +46,7 @@ runs:
       if: ${{ startsWith(github.head_ref, 'actions/imgcmp/') != true }}
       shell: bash
       run: |
-        /home/runner/.deno/bin/deno run \
+        deno run \
           --allow-read \
           --allow-run \
           https://raw.githubusercontent.com/9sako6/imgcmp/use-create-pull-request-action/src/optimize.ts \
@@ -55,7 +55,7 @@ runs:
       if: ${{ startsWith(github.head_ref, 'actions/imgcmp/') != true }}
       shell: bash
       run: |
-        /home/runner/.deno/bin/deno run \
+        deno run \
           --allow-read \
           --allow-write \
           https://raw.githubusercontent.com/9sako6/imgcmp/use-create-pull-request-action/src/export_stat.ts \
@@ -65,13 +65,13 @@ runs:
       if: ${{ startsWith(github.head_ref, 'actions/imgcmp/') != true }}
       shell: bash
       run: |
-        message=$(/home/runner/.deno/bin/deno run \
+        message=$(deno run \
           --allow-read \
           https://raw.githubusercontent.com/9sako6/imgcmp/use-create-pull-request-action/src/show_stat_message.ts \
           '/tmp/imgcmp-stat.json'
         )
 
-        title=$(/home/runner/.deno/bin/deno run \
+        title=$(deno run \
           --allow-read \
           https://raw.githubusercontent.com/9sako6/imgcmp/use-create-pull-request-action/src/show_stat_title.ts \
           '/tmp/imgcmp-stat.json'
