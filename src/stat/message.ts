@@ -28,7 +28,6 @@ export const statMessage = async (statJsonPath: string) => {
     totalBeforeBytes += beforeBytes;
     totalAfterBytes += afterBytes;
 
-    // deno-fmt-ignore-start
     rows.push(
       `<tr>
         <td>${path}</td>
@@ -37,7 +36,6 @@ export const statMessage = async (statJsonPath: string) => {
         <td>-${diffRate}%</td>
       </tr>`,
     );
-    // deno-fmt-ignore-end
   }
 
   const totalDiffRate =
@@ -45,7 +43,6 @@ export const statMessage = async (statJsonPath: string) => {
       2,
     );
 
-  // deno-fmt-ignore-start
   const footers = [
     `<tr>
       <td></td>
@@ -60,22 +57,20 @@ export const statMessage = async (statJsonPath: string) => {
       <td>-${totalDiffRate}%</td>
     </tr>`,
   ];
-  // deno-fmt-ignore-end
 
-  const message = `
-  Optimize images (reduced by ${totalDiffRate}%)
-  \n
+  const message = `Optimize images (reduced by ${totalDiffRate}%)
+
   <table>
-    ${[
+    ${
+    [
       ...headers,
       ...rows,
       ...footers,
     ].join("\n")
-    }
+  }
   </table>
-  \n
-  This Pull Request is created by GitHub Actions ([9sako6/imgcmp](https://github.com/9sako6/imgcmp)).
-  `
+
+  This Pull Request is created by GitHub Actions ([9sako6/imgcmp](https://github.com/9sako6/imgcmp)).`;
 
   return message;
 };

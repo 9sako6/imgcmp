@@ -112,7 +112,7 @@ runs:
         git config --local user.email "noreply@github.com"
         git tag v0
         git add .
-        git commit -m "Optimize images"
+        # git commit -m "Optimize images"
         sha=$(git rev-parse --short HEAD)
         new_branch="actions/imgcmp/${sha}"
         # git switch -c ${new_branch}
@@ -122,12 +122,13 @@ runs:
       id: commit
     - name: Create a pull request
       if: ${{ startsWith(github.head_ref, 'actions/imgcmp/') != true }}
-      uses: peter-evans/create-pull-request@v3
+      uses: peter-evans/create-pull-request@v3.14.0
       with:
         token: ${{ inputs.token }}
         committer: GitHub <noreply@github.com>
+        commit-message: ${{ steps.template.outputs.message }}
         author: ${{ github.actor }} <${{ github.actor }}@users.noreply.github.com>
         branch: ${{ steps.commit.outputs.new_branch }}
-        title: "auto pr"
-        body: ${{ steps.template.outputs.message }}
+        # title: "auto pr"
+        # body: ${{ steps.template.outputs.message }}
         draft: false
