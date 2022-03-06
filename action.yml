@@ -53,22 +53,7 @@ runs:
       if: ${{ startsWith(github.head_ref, 'actions/imgcmp/') != true }}
       shell: bash
       run: |
-        echo "::group::cwebp"
-        find * -type f | grep .webp | grep -vE '${{ inputs.paths-ignore-regexp }}' | xargs -I{} cwebp {} -o {} && true
-        echo "::endgroup::"
-        echo "::group::gifsicle"
-        find * -type f | grep .gif | grep -vE '${{ inputs.paths-ignore-regexp }}' | xargs -I{} gifsicle -b -O3 --colors 256 {} && true
-        echo "::endgroup::"
-        echo "::group::optipng"
-        find * -type f | grep .png | grep -vE '${{ inputs.paths-ignore-regexp }}' | xargs -I{} optipng -o2 {} && true
-        echo "::endgroup::"
-        echo "::group::jpegoptim"
-        find * -type f | grep .jpg | grep -vE '${{ inputs.paths-ignore-regexp }}' | xargs -I{} jpegoptim -m85 {} && true
-        find * -type f | grep .jpeg | grep -vE '${{ inputs.paths-ignore-regexp }}' | xargs -I{} jpegoptim -m85 {} && true
-        echo "::endgroup::"
-        echo "::group::svgo"
-        find * -type f | grep .svg | grep -vE '${{ inputs.paths-ignore-regexp }}' | xargs -I{} svgo {} && true
-        echo "::endgroup::"
+        /home/runner/.deno/bin/deno run https://raw.githubusercontent.com/9sako6/imgcmp/use-create-pull-request-action/src/optimize.ts '${{ inputs.paths-ignore-regexp }}'
     - name: Check if images were compressed
       if: ${{ startsWith(github.head_ref, 'actions/imgcmp/') != true }}
       shell: bash
@@ -102,29 +87,6 @@ runs:
         echo ::set-output name=sha::${sha}
         echo ::set-output name=new_branch::${new_branch}
       id: commit
-    - name: Sample
-      shell: bash
-      run: |
-        /home/runner/.deno/bin/deno run https://raw.githubusercontent.com/9sako6/imgcmp/use-create-pull-request-action/src/index.ts
-    # - name: Commit images
-    #   if: ${{ startsWith(github.head_ref, 'actions/imgcmp/') != true }}
-    #   shell: bash
-    #   run: |
-    #     git config --local user.name "GitHub"
-    #     git config --local user.email "noreply@github.com"
-    #     git add .
-    #     git commit -m "Optimize images"
-    #   id: commit
-    # - name: Edit the commit message.
-    #   if: ${{ startsWith(github.head_ref, 'actions/imgcmp/') != true }}
-    #   shell: bash
-    #   run: |
-    #     if [ -n "${{ steps.diff.outputs.no_change }}" ]; then
-    #       echo 'This step is skipped.'
-    #       exit 0
-    #     fi
-    #     git switch ${{ steps.commit.outputs.new_branch }}
-    #     git commit --amend -m '${{ steps.template.outputs.title }}'
     - name: Create a pull request
       if: ${{ startsWith(github.head_ref, 'actions/imgcmp/') != true }}
       uses: peter-evans/create-pull-request@v3

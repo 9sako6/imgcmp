@@ -1,0 +1,19 @@
+name: CI
+on: push
+jobs:
+  deno-ci:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3.0.0
+      - uses: denoland/setup-deno@v1.1.0
+        with:
+          deno-version: "1.19.2"
+      - name: Run fmt
+        run: |
+          deno fmt --check
+      - name: Run lint
+        run: |
+          deno lint
+      - name: Run tests
+        run: |
+          deno test --allow-read --allow-run
