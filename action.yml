@@ -30,7 +30,7 @@ runs:
         jpegoptim --version
         optipng -v
         svgo -v
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3.0.0
       if: ${{ startsWith(github.head_ref, 'actions/imgcmp/') != true }}
     - name: Export images' statistics in json before optimization
       if: ${{ startsWith(github.head_ref, 'actions/imgcmp/') != true }}
