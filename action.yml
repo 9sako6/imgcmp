@@ -53,7 +53,7 @@ runs:
       if: ${{ startsWith(github.head_ref, 'actions/imgcmp/') != true }}
       shell: bash
       run: |
-        /home/runner/.deno/bin/deno run https://raw.githubusercontent.com/9sako6/imgcmp/use-create-pull-request-action/src/optimize.ts '${{ inputs.paths-ignore-regexp }}'
+        /home/runner/.deno/bin/deno run --allow-read --allow-run https://raw.githubusercontent.com/9sako6/imgcmp/use-create-pull-request-action/src/optimize.ts '${{ inputs.paths-ignore-regexp }}'
     - name: Check if images were compressed
       if: ${{ startsWith(github.head_ref, 'actions/imgcmp/') != true }}
       shell: bash
