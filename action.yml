@@ -34,6 +34,18 @@ runs:
     - name: Get actions information
       shell: bash
       run: |
+        echo ${GITHUB_REF##*/}
+        echo '-------------------------'
+        echo $(basename ${{ github.action_path }})
+        echo '-------------------------'
+        echo '${{ toJSON(github) }}'
+        echo '-------------------------'
+        echo '${{ toJSON(steps) }}'
+        echo '-------------------------'
+        echo '${{ toJSON(job) }}'
+        echo '-------------------------'
+        echo '${{ toJSON(runner) }}'
+        echo '-------------------------'
         echo ::set-output name=tag::$(basename ${{ github.action_path }})
       id: actions-info
     - name: Export images' statistics in json before optimization
