@@ -64,7 +64,7 @@ export const statMessage = async (statJsonPath: string) => {
 
   const message = `
   Optimize images (reduced by ${totalDiffRate}%)
-
+  \n
   <table>
     ${[
       ...headers,
@@ -73,7 +73,7 @@ export const statMessage = async (statJsonPath: string) => {
     ].join("\n")
     }
   </table>
-
+  \n
   This Pull Request is created by GitHub Actions ([9sako6/imgcmp](https://github.com/9sako6/imgcmp)).
   `
 
