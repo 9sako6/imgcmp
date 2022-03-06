@@ -16,4 +16,4 @@ jobs:
           deno lint
       - name: Run tests
         run: |
-          deno test --allow-read --allow-run
+          deno test --allow-read --allow-run --allow-write

@@ -56,6 +56,7 @@ runs:
         /home/runner/.deno/bin/deno run \
           --allow-read \
           --allow-run \
+          --allow-write \
           https://raw.githubusercontent.com/9sako6/imgcmp/use-create-pull-request-action/src/optimize.ts \
           '${{ inputs.paths-ignore-regexp }}' \
           '/tmp/imgcmp-stat.json'
