@@ -82,6 +82,8 @@ runs:
         ${message}
         EOS
         )
+        echo $message
+        echo $title
         echo ::set-output name=message::${message}
         echo ::set-output name=title::${title}
       id: template
@@ -126,6 +128,6 @@ runs:
         committer: GitHub <noreply@github.com>
         author: ${{ github.actor }} <${{ github.actor }}@users.noreply.github.com>
         branch: ${{ steps.commit.outputs.new_branch }}
-        title: ${{ steps.template.outputs.title }}
+        title: "auto pr"
         body: ${{ steps.template.outputs.message }}
         draft: false
