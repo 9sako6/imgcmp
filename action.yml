@@ -80,6 +80,17 @@ runs:
           '${{ inputs.paths-ignore-regexp }}' \
           '/tmp/imgcmp-stat.json'
         cat '/tmp/imgcmp-stat.json'
+    - name: Export images' statistics in json after optimization
+      if: ${{ startsWith(github.head_ref, 'actions/imgcmp/') != true }}
+      shell: bash
+      run: |
+        message=$(/home/runner/.deno/bin/deno run \
+          --allow-read \
+          https://raw.githubusercontent.com/9sako6/imgcmp/use-create-pull-request-action/src/show_stat_message.ts \
+          '/tmp/imgcmp-stat.json'
+        )s
+        echo ::set-output name=message::${message}
+      id: template
     - name: Check if images were compressed
       if: ${{ startsWith(github.head_ref, 'actions/imgcmp/') != true }}
       shell: bash
@@ -122,5 +133,5 @@ runs:
         author: ${{ github.actor }} <${{ github.actor }}@users.noreply.github.com>
         branch: ${{ steps.commit.outputs.new_branch }}
         title: "Auto PR"
-        body: "This is a sample pull request."
+        body: ${{ steps.template.outputs.message }}
         draft: false

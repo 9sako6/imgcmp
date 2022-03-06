@@ -1,7 +1,7 @@
 import { fileSize } from "../image/file_size.ts";
 import { ensureFile } from "../deps.ts";
 
-type Stat = {
+export type Stat = {
   [path: string]: {
     bytes: number[];
   };
