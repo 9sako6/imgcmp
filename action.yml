@@ -115,11 +115,13 @@ runs:
       id: commit
     - shell: bash
       run: |
-        echo ${{ github }}
+        echo '${{ toJSON(github) }}'
+        echo '${{ toJSON(steps) }}'
+        echo '${{ toJSON(job) }}'
+        echo '${{ toJSON(runner) }}'
         echo ${{ github.action }}
-        echo ${{ github.action_ref }}
-        echo ${{ github.github.github.action_path }}
-        echo ${{ github.github.action_repository }}
+        echo $(basename ${{ github.action_path }})
+        echo ${{ github.action_repository }}
     - name: Create a pull request
       if: ${{ startsWith(github.head_ref, 'actions/imgcmp/') != true }}
       uses: peter-evans/create-pull-request@v3.14.0
