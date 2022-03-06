@@ -46,7 +46,13 @@ runs:
         echo '-------------------------'
         echo '${{ toJSON(runner) }}'
         echo '-------------------------'
-        echo ::set-output name=tag::$(basename ${{ github.action_path }})
+
+        if [ '.' = $(basename ${{ github.action_path }}) ]; then
+          tag=${GITHUB_REF##*/}
+        else
+          tag=$(basename ${{ github.action_path }})
+        fi
+        echo ::set-output name=tag::${tag}
       id: actions-info
     - name: Export images' statistics in json before optimization
       if: ${{ startsWith(github.head_ref, 'actions/imgcmp/') != true }}
