@@ -15,15 +15,9 @@ inputs:
 runs:
   using: "composite"
   steps:
-    - uses: actions/setup-node@v2
-      if: ${{ startsWith(github.head_ref, 'actions/imgcmp/') != true }}
+    - uses: denoland/setup-deno@v1.1.0
       with:
-        node-version: "16"
-    - name: Install deno
-      shell: bash
-      if: ${{ startsWith(github.head_ref, 'actions/imgcmp/') != true }}
-      run: |
-        curl -fsSL https://deno.land/install.sh | sh
+        deno-version: "1.19.2"
     - name: Install cwebp, gifsicle, jpegoptim, optipng, svgo
       if: ${{ startsWith(github.head_ref, 'actions/imgcmp/') != true }}
       shell: bash
