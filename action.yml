@@ -112,7 +112,7 @@ runs:
         git config --local user.email "noreply@github.com"
         git tag v0
         git add .
-        # git commit -m "Optimize images"
+        git commit -m "Optimize images by imgcmp action"
         sha=$(git rev-parse --short HEAD)
         new_branch="actions/imgcmp/${sha}"
         # git switch -c ${new_branch}
@@ -126,9 +126,8 @@ runs:
       with:
         token: ${{ inputs.token }}
         committer: GitHub <noreply@github.com>
-        commit-message: ${{ steps.template.outputs.message }}
         author: ${{ github.actor }} <${{ github.actor }}@users.noreply.github.com>
         branch: ${{ steps.commit.outputs.new_branch }}
-        # title: "auto pr"
-        # body: ${{ steps.template.outputs.message }}
+        title: "Optimize images by imgcmp action"
+        body: ${{ steps.template.outputs.message }}
         draft: false
