@@ -115,7 +115,10 @@ runs:
       id: commit
     - shell: bash
       run: |
-        echo ${{ github }}
+        echo '${{ toJSON(github) }}'
+        echo '${{ toJSON(steps) }}'
+        echo '${{ toJSON(job) }}'
+        echo '${{ toJSON(runner) }}'
         echo ${{ github.action }}
         echo ${{ github.action_ref }}
         echo ${{ github.github.github.action_path }}
