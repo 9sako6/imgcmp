@@ -133,3 +133,4 @@ runs:
         title: ${{ steps.template.outputs.title }}
         body: ${{ steps.template.outputs.message }}
         draft: false
+        delete-branch: true
