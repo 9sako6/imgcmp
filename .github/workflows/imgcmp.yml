@@ -11,7 +11,7 @@ jobs:
           echo '${{ toJSON(steps) }}'
           echo '${{ toJSON(job) }}'
           echo '${{ toJSON(runner) }}'
-      - uses: 9sako6/imgcmp@use-create-pull-request-action
+      - uses: 9sako6/imgcmp@${GITHUB_REF##*/}
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           paths-ignore-regexp: 'figs/logo\.png'
