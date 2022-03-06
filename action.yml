@@ -124,6 +124,11 @@ runs:
         echo ::set-output name=sha::${sha}
         echo ::set-output name=new_branch::${new_branch}
       id: commit
+    - name: Debug
+      shell: bash
+      run: |
+        echo ${{ toJSON(github) }}
+        echo ${{ toJSON(github.head_ref) }}
     - name: Create a pull request
       if: ${{ startsWith(github.head_ref, 'actions/imgcmp/') != true }}
       uses: peter-evans/create-pull-request@v3.14.0
