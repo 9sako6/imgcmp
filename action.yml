@@ -31,22 +31,11 @@ runs:
         echo "::group::Install cwebp, gifsicle, jpegoptim, optipng, svgo"
         sudo apt-get install -y webp gifsicle jpegoptim optipng
         npm install -g svgo
-        echo "::endgroup::"
-        echo "::group::cwebp"
         cwebp -version
-        echo "::endgroup::"
-        echo "::group::gifsicle"
         gifsicle --version
-        echo "::endgroup::"
-        echo "::group::jpegoptim"
         jpegoptim --version
-        echo "::endgroup::"
-        echo "::group::optipng"
         optipng -v
-        echo "::endgroup::"
-        echo "::group::svgo"
         svgo -v
-        echo "::endgroup::"
     - uses: actions/checkout@v2
       if: ${{ startsWith(github.head_ref, 'actions/imgcmp/') != true }}
     - name: Export images' statistics in json before optimization
@@ -88,8 +77,13 @@ runs:
           --allow-read \
           https://raw.githubusercontent.com/9sako6/imgcmp/use-create-pull-request-action/src/show_stat_message.ts \
           '/tmp/imgcmp-stat.json'
-        )s
+        )
+        title=$(cat << EOS | head -n 1
+        ${message}
+        EOS
+        )
         echo ::set-output name=message::${message}
+        echo ::set-output name=title::${title}
       id: template
     - name: Check if images were compressed
       if: ${{ startsWith(github.head_ref, 'actions/imgcmp/') != true }}
@@ -132,6 +126,6 @@ runs:
         committer: GitHub <noreply@github.com>
         author: ${{ github.actor }} <${{ github.actor }}@users.noreply.github.com>
         branch: ${{ steps.commit.outputs.new_branch }}
-        title: "Auto PR"
+        title: ${{ steps.template.outputs.title }}
         body: ${{ steps.template.outputs.message }}
         draft: false
