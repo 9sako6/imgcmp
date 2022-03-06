@@ -5,13 +5,7 @@ jobs:
     if: ${{ startsWith(github.head_ref, 'actions/imgcmp/') != true }}
     runs-on: ubuntu-latest
     steps:
-      - run: |
-          echo ${GITHUB_REF##*/}
-          echo '${{ toJSON(github) }}'
-          echo '${{ toJSON(steps) }}'
-          echo '${{ toJSON(job) }}'
-          echo '${{ toJSON(runner) }}'
-      - uses: 9sako6/imgcmp@${GITHUB_REF##*/}
+      - uses: ./
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           paths-ignore-regexp: 'figs/logo\.png'
