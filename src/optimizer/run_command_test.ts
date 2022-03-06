@@ -1,4 +1,4 @@
-import { assert, assertEquals } from "../deps.ts";
+import { assertEquals, assertRejects } from "../deps.ts";
 import { runCommand } from "./run_command.ts";
 
 Deno.test("runCommand() executes ls command", async () => {
@@ -8,9 +8,9 @@ Deno.test("runCommand() executes ls command", async () => {
 });
 
 Deno.test("runCommand() fails ls command", async () => {
-  try {
-    await runCommand(["ls", "not-exist-path"]);
-  } catch (error) {
-    assert(error.code !== 0);
-  }
+  await assertRejects(async () => await runCommand(["ls", "not-exist-path"]));
+  // try {
+  // } catch (error) {
+  //   assert(error.code !== 0);
+  // }
 });

@@ -1,13 +1,16 @@
 import { imagePaths } from "./image/paths.ts";
 import { runCommand } from "./optimizer/run_command.ts";
+import { exportStatJson } from "./stat/file_stat_json.ts";
 
 async function optimize() {
-  const [pathsIgnorePattern] = Deno.args;
+  const [pathsIgnorePattern, exportPath] = Deno.args;
   const pathsIgnoreRegExp = pathsIgnorePattern
     ? new RegExp(pathsIgnorePattern)
     : undefined;
 
   const allImages = await imagePaths(".", { pathsIgnoreRegExp });
+  await exportStatJson(exportPath, allImages);
+
   const gifImages = allImages.filter((path) => /\.gif$/.test(path));
   const jpegImages = allImages.filter((path) => /\.(jpeg|jpg)$/.test(path));
   const pngImages = allImages.filter((path) => /\.png$/.test(path));

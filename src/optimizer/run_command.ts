@@ -9,7 +9,7 @@ export const runCommand = async (
   process.close();
 
   if (!success) {
-    throw { message: decode(await process.output()), code };
+    throw new Error(decode(await process.output()));
   }
 
   return {

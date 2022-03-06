@@ -53,7 +53,13 @@ runs:
       if: ${{ startsWith(github.head_ref, 'actions/imgcmp/') != true }}
       shell: bash
       run: |
-        /home/runner/.deno/bin/deno run --allow-read --allow-run https://raw.githubusercontent.com/9sako6/imgcmp/use-create-pull-request-action/src/optimize.ts '${{ inputs.paths-ignore-regexp }}'
+        /home/runner/.deno/bin/deno run \
+          --allow-read \
+          --allow-run \
+          https://raw.githubusercontent.com/9sako6/imgcmp/use-create-pull-request-action/src/optimize.ts \
+          '${{ inputs.paths-ignore-regexp }}' \
+          '/tmp/imgcmp-stat.json'
+        cat '/tmp/imgcmp-stat.json'
     - name: Check if images were compressed
       if: ${{ startsWith(github.head_ref, 'actions/imgcmp/') != true }}
       shell: bash
@@ -95,6 +101,6 @@ runs:
         committer: GitHub <noreply@github.com>
         author: ${{ github.actor }} <${{ github.actor }}@users.noreply.github.com>
         branch: ${{ steps.commit.outputs.new_branch }}
-        title: 'Auto PR'
-        body: 'This is a sample pull request.'
+        title: "Auto PR"
+        body: "This is a sample pull request."
         draft: false
