@@ -142,7 +142,7 @@ There are breaking changes from version `1.0.1`.
 
 - Use a Personal access token instead of `GITHUB_TOKEN`
   (https://github.com/9sako6/imgcmp/pull/26)
-  - `GITHUB_TOKEN` didn't have enough authority.
+  - `GITHUB_TOKEN` didn't have enough authority in a private repository.
 - Add `token` input (https://github.com/9sako6/imgcmp/pull/26)
   - `GITHUB_TOKEN` option in `env` was deleted.
 - Add `paths-ignore-regexp` input (https://github.com/9sako6/imgcmp/pull/26)
