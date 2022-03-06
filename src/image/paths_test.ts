@@ -6,7 +6,8 @@ Deno.test("imagePaths() lists image paths", async () => {
   const expected = [
     "figs/actions_time.png",
     "figs/logo.png",
-    "figs/needed_repo_permissions.png",
+    "figs/required_repo_permissions.png",
+    "figs/required_user_permissions.png",
     "figs/sample_pull_request.png",
     "fixtures/images/code.gif",
     "fixtures/images/code.jpg",

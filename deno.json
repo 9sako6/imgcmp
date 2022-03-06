@@ -1,0 +1,7 @@
+{
+  "fmt": {
+    "files": {
+      "exclude": ["README.md", "./doc/pat.md"]
+    }
+  }
+}
