@@ -9,8 +9,12 @@ export const statMessage = async (statJsonPath: string) => {
   let totalAfterBytes = 0;
 
   const headers = [
-    `| File name | Before | After | Diff (rate) |`,
-    `| --------- | ------ | ----- | ----------- |`,
+    `<tr>
+      <th>File name</th>
+      <th>Before</th>
+      <th>After</th>
+      <th>Diff (rate)</th>
+    </tr>`,
   ];
 
   const rows: string[] = [];
@@ -26,7 +30,12 @@ export const statMessage = async (statJsonPath: string) => {
 
     // deno-fmt-ignore-start
     rows.push(
-      `| ${path} | ${bytesToUnit(beforeBytes)} | ${bytesToUnit(afterBytes)} | -${diffRate}% |`,
+      `<tr>
+        <td>${path}</td>
+        <td>${bytesToUnit(beforeBytes)}</td>
+        <td>${bytesToUnit(afterBytes)}</td>
+        <td>-${diffRate}%</td>
+      </tr>`,
     );
     // deno-fmt-ignore-end
   }
@@ -38,16 +47,35 @@ export const statMessage = async (statJsonPath: string) => {
 
   // deno-fmt-ignore-start
   const footers = [
-    "| | | | |",
-    `| Total | ${bytesToUnit(totalBeforeBytes)} | ${bytesToUnit(totalAfterBytes)} | -${totalDiffRate}% |`,
+    `<tr>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+    </tr>`,
+    `<tr>
+      <td>Total</td>
+      <td>${bytesToUnit(totalBeforeBytes)}</td>
+      <td>${bytesToUnit(totalAfterBytes)}</td>
+      <td>-${totalDiffRate}%</td>
+    </tr>`,
   ];
   // deno-fmt-ignore-end
 
-  const message = [
-    ...headers,
-    ...rows,
-    ...footers,
-  ].join("\n");
+  const message = `
+  Optimize images (reduced by ${totalDiffRate}%)
+
+  <table>
+    ${[
+      ...headers,
+      ...rows,
+      ...footers,
+    ].join("\n")
+    }
+  </table>
+
+  This Pull Request is created by GitHub Actions ([9sako6/imgcmp](https://github.com/9sako6/imgcmp)).
+  `
 
   return message;
 };
