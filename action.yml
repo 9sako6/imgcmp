@@ -39,9 +39,7 @@ runs:
         else
           tag=$(basename ${{ github.action_path }})
         fi
-
         echo ::set-output name=tag::${tag}
-        echo ::set-output name=base_branch::${GITHUB_REF##*/}
       id: actions-info
     - name: Export images' statistics in json before optimization
       if: ${{ startsWith(github.head_ref, 'actions/imgcmp/') != true }}
@@ -128,7 +126,6 @@ runs:
       shell: bash
       run: |
         echo ${{ toJSON(github) }}
-        echo ${{ toJSON(github.head_ref) }}
     - name: Create a pull request
       if: ${{ startsWith(github.head_ref, 'actions/imgcmp/') != true }}
       uses: peter-evans/create-pull-request@v3.14.0
@@ -137,7 +134,6 @@ runs:
         committer: GitHub <noreply@github.com>
         author: ${{ github.actor }} <${{ github.actor }}@users.noreply.github.com>
         branch: ${{ steps.commit.outputs.new_branch }}
-        base: ${{ steps.actions-info.outputs.base_branch }}
         title: ${{ steps.template.outputs.title }}
         body: ${{ steps.template.outputs.message }}
         draft: false
