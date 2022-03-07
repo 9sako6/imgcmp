@@ -125,7 +125,7 @@ runs:
     - name: Debug
       shell: bash
       run: |
-        echo ${{ toJSON(github) }}
+        echo '${{ toJSON(github) }}'
     - name: Create a pull request
       if: ${{ startsWith(github.head_ref, 'actions/imgcmp/') != true }}
       uses: peter-evans/create-pull-request@v3.14.0
