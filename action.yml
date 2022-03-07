@@ -44,7 +44,7 @@ runs:
     - name: Git reset
       shell: bash
       run: |
-        git reset --hard origin/${{ github.head_ref }}
+        git reset --hard origin/${{ steps.actions-info.outputs.tag }}
     - name: Export images' statistics in json before optimization
       if: ${{ startsWith(github.head_ref, 'actions/imgcmp/') != true }}
       shell: bash
