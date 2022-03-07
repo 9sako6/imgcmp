@@ -41,6 +41,10 @@ runs:
         fi
         echo ::set-output name=tag::${tag}
       id: actions-info
+    - name: Git reset
+      shell: bash
+      run: |
+        git reset --hard origin/${{ github.head_ref }}
     - name: Export images' statistics in json before optimization
       if: ${{ startsWith(github.head_ref, 'actions/imgcmp/') != true }}
       shell: bash
