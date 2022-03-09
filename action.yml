@@ -50,7 +50,8 @@ runs:
         else
           branch='${{ github.ref_name }}'
         fi
-        echo $branch
+        echo ::set-output name=base_branch::${branch}
+      id: branch
     - name: Git reset
       shell: bash
       run: |
@@ -144,7 +145,7 @@ runs:
         committer: GitHub <noreply@github.com>
         author: ${{ github.actor }} <${{ github.actor }}@users.noreply.github.com>
         branch: ${{ steps.commit.outputs.new_branch }}
-        base: ${{ github.head_ref }}
+        base: ${{ steps.branch.outputs.base_branch }}
         title: ${{ steps.template.outputs.title }}
         body: ${{ steps.template.outputs.message }}
         draft: false

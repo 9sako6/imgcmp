@@ -1,5 +1,5 @@
 name: imgcmp
-on: push
+on: [push, pull_request]
 jobs:
   imgcmp:
     if: ${{ startsWith(github.head_ref, 'actions/imgcmp/') != true }}
