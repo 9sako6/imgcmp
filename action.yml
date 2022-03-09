@@ -46,9 +46,9 @@ runs:
       run: |
         echo '${{ toJSON(github) }}'
         if [ '${{ github.event_name }}' = 'pull_request' ]; then
-          branch='${{ github.ref_name }}'
-        else
           branch='${{ github.head_ref }}'
+        else
+          branch='${{ github.ref_name }}'
         fi
         echo $branch
     - name: Git reset
