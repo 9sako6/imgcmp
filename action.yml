@@ -29,18 +29,6 @@ runs:
         jpegoptim --version
         optipng -v
         svgo -v
-    - uses: actions/checkout@v2
-      if: ${{ startsWith(github.head_ref, 'actions/imgcmp/') != true }}
-    - name: Get actions information
-      shell: bash
-      run: |
-        if [ '.' = $(basename ${{ github.action_path }}) ]; then
-          tag=${GITHUB_REF##*/}
-        else
-          tag=$(basename ${{ github.action_path }})
-        fi
-        echo ::set-output name=tag::${tag}
-      id: actions-info
     - name: Debug
       shell: bash
       run: |
@@ -51,6 +39,20 @@ runs:
         fi
         echo ::set-output name=base_branch::${branch}
       id: branch
+    - uses: actions/checkout@v3
+      if: ${{ startsWith(github.head_ref, 'actions/imgcmp/') != true }}
+      with:
+        ref: ${{ steps.branch.outputs.base_branch }}
+    - name: Get actions information
+      shell: bash
+      run: |
+        if [ '.' = $(basename ${{ github.action_path }}) ]; then
+          tag=${GITHUB_REF##*/}
+        else
+          tag=$(basename ${{ github.action_path }})
+        fi
+        echo ::set-output name=tag::${tag}
+      id: actions-info
     - name: Git reset
       shell: bash
       run: |
