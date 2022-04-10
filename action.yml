@@ -29,7 +29,7 @@ runs:
         jpegoptim --version
         optipng -v
         svgo -v
-    - uses: actions/checkout@v3.0.0
+    - uses: actions/checkout@v2
       if: ${{ startsWith(github.head_ref, 'actions/imgcmp/') != true }}
     - name: Get actions information
       shell: bash
