@@ -44,7 +44,7 @@ runs:
     - name: Debug
       shell: bash
       run: |
-        echo '${{ toJSON(github) }}'
+        # echo '${{ toJSON(github) }}'
         if [ '${{ github.event_name }}' = 'pull_request' ]; then
           branch=${{ github.head_ref }}
         else
