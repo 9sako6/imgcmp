@@ -29,7 +29,7 @@ runs:
         jpegoptim --version
         optipng -v
         svgo -v
-    - name: Debug
+    - name: Branch information
       shell: bash
       run: |
         if [ '${{ github.event_name }}' = 'pull_request' ]; then
@@ -47,7 +47,11 @@ runs:
       shell: bash
       run: |
         if [ '.' = $(basename ${{ github.action_path }}) ]; then
-          tag=${GITHUB_REF##*/}
+          if [ '${{ github.event_name }}' = 'pull_request' ]; then
+            tag='${{ steps.branch.outputs.base_branch }}'
+          else
+            tag=${GITHUB_REF##*/}
+          fi
         else
           tag=$(basename ${{ github.action_path }})
         fi
@@ -66,7 +70,7 @@ runs:
         deno run \
           --allow-read \
           --allow-write \
-          https://raw.githubusercontent.com/9sako6/imgcmp/master/src/export_stat.ts \
+          https://raw.githubusercontent.com/9sako6/imgcmp/${{ steps.actions-info.outputs.tag }}/src/export_stat.ts \
           '${{ inputs.paths-ignore-regexp }}' \
           '/tmp/imgcmp-stat.json'
     - name: Optimize images
@@ -76,7 +80,7 @@ runs:
         deno run \
           --allow-read \
           --allow-run \
-          https://raw.githubusercontent.com/9sako6/imgcmp/master/src/optimize.ts \
+          https://raw.githubusercontent.com/9sako6/imgcmp/${{ steps.actions-info.outputs.tag }}/src/optimize.ts \
           '${{ inputs.paths-ignore-regexp }}'
     - name: Export images' statistics in json after optimization
       if: ${{ startsWith(github.head_ref, 'actions/imgcmp/') != true }}
@@ -85,7 +89,7 @@ runs:
         deno run \
           --allow-read \
           --allow-write \
-          https://raw.githubusercontent.com/9sako6/imgcmp/master/src/export_stat.ts \
+          https://raw.githubusercontent.com/9sako6/imgcmp/${{ steps.actions-info.outputs.tag }}/src/export_stat.ts \
           '${{ inputs.paths-ignore-regexp }}' \
           '/tmp/imgcmp-stat.json'
     - name: Export images' statistics in json after optimization
@@ -94,13 +98,13 @@ runs:
       run: |
         message=$(deno run \
           --allow-read \
-          https://raw.githubusercontent.com/9sako6/imgcmp/master/src/show_stat_message.ts \
+          https://raw.githubusercontent.com/9sako6/imgcmp/${{ steps.actions-info.outputs.tag }}/src/show_stat_message.ts \
           '/tmp/imgcmp-stat.json'
         )
 
         title=$(deno run \
           --allow-read \
-          https://raw.githubusercontent.com/9sako6/imgcmp/master/src/show_stat_title.ts \
+          https://raw.githubusercontent.com/9sako6/imgcmp/${{ steps.actions-info.outputs.tag }}/src/show_stat_title.ts \
           '/tmp/imgcmp-stat.json'
         )
 
