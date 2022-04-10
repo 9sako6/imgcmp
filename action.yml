@@ -29,18 +29,40 @@ runs:
         jpegoptim --version
         optipng -v
         svgo -v
-    - uses: actions/checkout@v3.0.0
+    - name: Branch information
+      shell: bash
+      run: |
+        if [ '${{ github.event_name }}' = 'pull_request' ]; then
+          branch=${{ github.head_ref }}
+        else
+          branch=${{ github.ref_name }}
+        fi
+        echo ::set-output name=base_branch::${branch}
+      id: branch
+    - uses: actions/checkout@v3
       if: ${{ startsWith(github.head_ref, 'actions/imgcmp/') != true }}
+      with:
+        ref: ${{ steps.branch.outputs.base_branch }}
     - name: Get actions information
       shell: bash
       run: |
         if [ '.' = $(basename ${{ github.action_path }}) ]; then
-          tag=${GITHUB_REF##*/}
+          if [ '${{ github.event_name }}' = 'pull_request' ]; then
+            tag='${{ steps.branch.outputs.base_branch }}'
+          else
+            tag=${GITHUB_REF##*/}
+          fi
         else
           tag=$(basename ${{ github.action_path }})
         fi
         echo ::set-output name=tag::${tag}
       id: actions-info
+    - name: Git reset
+      shell: bash
+      run: |
+        # NOTE: If the trigger event is 'pull_request', `git fetch` is necessary.
+        git fetch
+        git reset --hard origin/${{ steps.branch.outputs.base_branch }}
     - name: Export images' statistics in json before optimization
       if: ${{ startsWith(github.head_ref, 'actions/imgcmp/') != true }}
       shell: bash
@@ -130,6 +152,7 @@ runs:
         committer: GitHub <noreply@github.com>
         author: ${{ github.actor }} <${{ github.actor }}@users.noreply.github.com>
         branch: ${{ steps.commit.outputs.new_branch }}
+        base: ${{ steps.branch.outputs.base_branch }}
         title: ${{ steps.template.outputs.title }}
         body: ${{ steps.template.outputs.message }}
         draft: false
