@@ -25,7 +25,7 @@ name: imgcmp
 on: push
 jobs:
   imgcmp:
-    if: ${{ startsWith(github.head_ref, 'actions/imgcmp/') != true }}
+    if: startsWith(github.head_ref, 'actions/imgcmp/') != true
     runs-on: ubuntu-latest
     steps:
       - uses: 9sako6/imgcmp@v2.0.1
@@ -35,4 +35,4 @@ jobs:
 
 :warning: For a PAT users :warning:
 
-`if: ${{ startsWith(github.head_ref, 'actions/imgcmp/') != true }}` statement is necessary if you use a PAT. Without this statement, the pull request opened by imgcmp executes new actions and falls into an infinite loop.
+`if: startsWith(github.head_ref, 'actions/imgcmp/') != true` statement is necessary if you use a PAT. Without this statement, the pull request opened by imgcmp executes new actions and falls into an infinite loop.
