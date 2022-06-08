@@ -10,3 +10,9 @@ jobs:
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           paths-ignore-regexp: 'figs/logo\.png'
+      - name: Close Pull
+        uses: peter-evans/close-pull@v2
+        with:
+          pull-request-number: 1
+          comment: Auto-closing pull request
+          delete-branch: true
