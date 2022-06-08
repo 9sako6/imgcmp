@@ -12,9 +12,6 @@ inputs:
     description: "A regular expression for images' paths you don't want to compress."
     required: false
     default: ""
-outputs:
-  pull-request-number:
-    description: "The pull request number"
 runs:
   using: "composite"
   steps:
@@ -149,7 +146,6 @@ runs:
       id: commit
     - name: Create a pull request
       if: startsWith(github.head_ref, 'actions/imgcmp/') != true
-      id: cpr
       uses: peter-evans/create-pull-request@v3.14.0
       with:
         token: ${{ inputs.token }}
@@ -161,8 +157,3 @@ runs:
         body: ${{ steps.template.outputs.message }}
         draft: false
         delete-branch: true
-    - name: Set output
-      if: startsWith(github.head_ref, 'actions/imgcmp/') != true
-      shell: bash
-      run: |
-        echo ::set-output name=pull-request-number::${{ steps.cpr.outputs.pull-request-number }}

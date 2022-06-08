@@ -10,14 +10,11 @@ jobs:
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           paths-ignore-regexp: 'figs/logo\.png'
-      - name: Set pr number
+      - name: Set a created pull request number
         id: pr
         run: |
-          echo ::set-output name=pull-request-number::$PULL_REQUEST_NUMBER
           echo $PULL_REQUEST_NUMBER
-          echo ${{ steps.pr.outputs.pull-request-number }}
-          echo ${{ steps.cpr.outputs.pull-request-number }}
-          echo ${{ steps.imgcmp.outputs.pull-request-number }}
+          echo ::set-output name=pull-request-number::$PULL_REQUEST_NUMBER
       - name: Close Pull
         uses: peter-evans/close-pull@v2
         with:
