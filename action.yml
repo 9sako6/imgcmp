@@ -162,4 +162,5 @@ runs:
         draft: false
         delete-branch: true
     - name: Debug
+      shell: bash
       run: echo ${{ steps.cpr.outputs.pull-request-number }}
