@@ -87,7 +87,7 @@ jobs:
 ### Action outputs
 
 | Name|Description|
-| - | - | - |
+| - | - |
 | `pull-request-number` | A pull request number created by imgcmp. |
 
 Step outputs can be accessed as in the following example.
