@@ -12,6 +12,10 @@ inputs:
     description: "A regular expression for images' paths you don't want to compress."
     required: false
     default: ""
+outputs:
+  pull-request-number:
+    description: "A pull request number created by imgcmp."
+    value: ${{ steps.set-outputs.outputs.pull-request-number }}
 runs:
   using: "composite"
   steps:
@@ -157,3 +161,12 @@ runs:
         body: ${{ steps.template.outputs.message }}
         draft: false
         delete-branch: true
+    - name: Set outputs
+      shell: bash
+      id: set-outputs
+      run: |
+        echo ::set-output name=pull-request-number::$PULL_REQUEST_NUMBER
+    - name: Check outputs
+      shell: bash
+      run: |
+        echo "pull-request-number: ${{ steps.set-outputs.outputs.pull-request-number }}"

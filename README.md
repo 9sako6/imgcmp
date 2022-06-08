@@ -84,6 +84,24 @@ jobs:
           paths-ignore-regexp: "(ignore/.*)|(public/.*)"
 ```
 
+### Action outputs
+
+| Name|Description|
+| - | - | - |
+| `pull-request-number` | A pull request number created by imgcmp. |
+
+Step outputs can be accessed as in the following example.
+
+```yml
+      - uses: 9sako6/imgcmp@v2.0.1
+        id: imgcmp
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+      - name: Check outputs
+        run: |
+          echo ${{ steps.imgcmp.outputs.pull-request-number }}
+```
+
 ## Supported image formats
 
 - [x] JPEG/JPG
@@ -125,6 +143,10 @@ It took 34 sec to create the following PR.
 <p align="center"><img src="./figs/sample_pull_request.png"></p>
 
 ## Change Log
+
+### Not yet released (`master` branch)
+
+- Add `pull-request-number` outputs
 
 ### `v2.0.1` (April 10, 2022)
 
