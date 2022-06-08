@@ -11,6 +11,10 @@ jobs:
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           paths-ignore-regexp: 'figs/logo\.png'
+      - run: |
+          echo $PULL_REQUEST_NUMBER
+          echo ${{ steps.cpr.outputs.pull-request-number }}
+          echo ${{ steps.imgcmp.outputs.pull-request-number }}
       - name: Close Pull
         uses: peter-evans/close-pull@v2
         with:
