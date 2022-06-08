@@ -18,6 +18,6 @@ jobs:
       - name: Close Pull
         uses: peter-evans/close-pull@v2
         with:
-          pull-request-number: ${{ steps.imgcmp.outputs.pull-request-number }}
+          pull-request-number: $PULL_REQUEST_NUMBER
           comment: Auto-closing pull request
           delete-branch: true
