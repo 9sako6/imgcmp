@@ -7,12 +7,13 @@ jobs:
     steps:
       - uses: actions/checkout@v3.0.0
       - uses: ./
+        id: imgcmp
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           paths-ignore-regexp: 'figs/logo\.png'
       - name: Close Pull
         uses: peter-evans/close-pull@v2
         with:
-          pull-request-number: ${{ steps.cpr.outputs.pull-request-number }}
+          pull-request-number: ${{ steps.imgcmp.outputs.pull-request-number }}
           comment: Auto-closing pull request
           delete-branch: true

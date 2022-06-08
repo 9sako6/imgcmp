@@ -12,6 +12,9 @@ inputs:
     description: "A regular expression for images' paths you don't want to compress."
     required: false
     default: ""
+outputs:
+  pull-request-number:
+    description: "The pull request number"
 runs:
   using: "composite"
   steps:
