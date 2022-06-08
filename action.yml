@@ -146,6 +146,7 @@ runs:
       id: commit
     - name: Create a pull request
       if: startsWith(github.head_ref, 'actions/imgcmp/') != true
+      id: cpr
       uses: peter-evans/create-pull-request@v3.14.0
       with:
         token: ${{ inputs.token }}
