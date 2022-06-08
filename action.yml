@@ -161,6 +161,8 @@ runs:
         body: ${{ steps.template.outputs.message }}
         draft: false
         delete-branch: true
-    - name: Debug
+    - name: Set output
+      if: startsWith(github.head_ref, 'actions/imgcmp/') != true
       shell: bash
-      run: echo ${{ steps.cpr.outputs.pull-request-number }}
+      run: |
+        echo ::set-output name=pull-request-number::${{ steps.cpr.outputs.pull-request-number }}
