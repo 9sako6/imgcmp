@@ -31,6 +31,9 @@ on:
 jobs:
   imgcmp:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
     steps:
       - uses: 9sako6/imgcmp@v2.0.2
         with:
@@ -47,6 +50,9 @@ on:
 jobs:
   imgcmp:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
     steps:
       - uses: 9sako6/imgcmp@v2.0.2
         with:
@@ -82,6 +88,9 @@ on:
 jobs:
   imgcmp:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
     steps:
       - uses: 9sako6/imgcmp@v2.0.2
         with:
