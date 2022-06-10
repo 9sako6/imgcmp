@@ -28,6 +28,9 @@ jobs:
   imgcmp:
     if: startsWith(github.head_ref, 'actions/imgcmp/') != true
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
     steps:
       - uses: 9sako6/imgcmp@v2.0.1
         with:
@@ -45,6 +48,9 @@ jobs:
   imgcmp:
     if: startsWith(github.head_ref, 'actions/imgcmp/') != true
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
     steps:
       - uses: 9sako6/imgcmp@v2.0.1
         with:
@@ -77,6 +83,9 @@ jobs:
   imgcmp:
     if: startsWith(github.head_ref, 'actions/imgcmp/') != true
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
     steps:
       - uses: 9sako6/imgcmp@v2.0.1
         with:
