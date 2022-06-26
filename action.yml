@@ -133,7 +133,7 @@ runs:
         fi
       id: diff
     - name: Commit images
-      if: success()
+      if: success() && steps.diff.outputs.no_change != 'true'
       shell: bash
       run: |
         if [ -n "${{ steps.diff.outputs.no_change }}" ]; then

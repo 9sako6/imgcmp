@@ -50,7 +50,11 @@ export const statMessage = async (statJsonPath: string) => {
       <td>Total</td>
       <td>${bytesToUnit(totalBeforeBytes)}</td>
       <td>${bytesToUnit(totalAfterBytes)}</td>
-      <td>-${totalDiffRate}%</td>
+      <td>-${
+      totalDiffRate.toFixed(
+        2,
+      )
+    }%</td>
     </tr>`,
   ];
 
