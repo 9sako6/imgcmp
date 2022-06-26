@@ -24,3 +24,29 @@ export const exportStatJson = async (exportPath: string, paths: string[]) => {
 
   await Deno.writeTextFile(exportPath, JSON.stringify(stat));
 };
+
+export const readStatJson = async (statJsonPath: string): Promise<Stat> => {
+  return await JSON.parse(
+    (await Deno.readTextFile(statJsonPath)) || "{}",
+  ) as Stat;
+};
+
+export const fileStatistics = (json: Stat) => {
+  let totalBeforeBytes = 0;
+  let totalAfterBytes = 0;
+
+  for (const path of Object.keys(json)) {
+    const [beforeBytes, afterBytes] = json[path].bytes.slice(-2);
+    totalBeforeBytes += beforeBytes;
+    totalAfterBytes += afterBytes;
+  }
+
+  const totalDiffRate =
+    ((totalBeforeBytes - totalAfterBytes) / totalBeforeBytes * 100);
+
+  return {
+    totalAfterBytes,
+    totalBeforeBytes,
+    totalDiffRate,
+  };
+};
