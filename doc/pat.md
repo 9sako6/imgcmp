@@ -22,7 +22,11 @@ To run this GitHub Actions, please add the following lines to your
 
 ```yml
 name: imgcmp
-on: push
+on:
+  push:
+    branches:
+      - main
+      - master
 jobs:
   imgcmp:
     runs-on: ubuntu-latest
