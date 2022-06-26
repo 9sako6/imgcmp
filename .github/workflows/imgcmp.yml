@@ -2,7 +2,7 @@ name: imgcmp
 on: [push, pull_request]
 jobs:
   imgcmp:
-    if: startsWith(github.head_ref, 'actions/imgcmp/') != true
+    if: startsWith(github.head_ref, 'actions/imgcmp/') != true && startsWith(github.ref_name, 'actions/imgcmp/') != true
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3.0.0
@@ -10,6 +10,23 @@ jobs:
         id: imgcmp
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
+          paths-ignore-regexp: 'figs/logo\.png'
+      - name: Close Pull
+        uses: peter-evans/close-pull@v2
+        with:
+          pull-request-number: ${{ steps.imgcmp.outputs.pull-request-number }}
+          comment: Auto-closing pull request
+          delete-branch: true
+
+  imgcmp-with-pat:
+    if: startsWith(github.head_ref, 'actions/imgcmp/') != true && startsWith(github.ref_name, 'actions/imgcmp/') != true
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3.0.0
+      - uses: ./
+        id: imgcmp
+        with:
+          token: ${{ secrets.IMGCMP_ACCESS_TOKEN }}
           paths-ignore-regexp: 'figs/logo\.png'
       - name: Close Pull
         uses: peter-evans/close-pull@v2
