@@ -120,7 +120,7 @@ runs:
         echo ::set-output name=title::${title}
       id: template
     - name: Check if images were compressed
-      if: startsWith(github.head_ref, 'actions/imgcmp/') != true && startsWith(github.ref_name, 'actions/imgcmp/') != true
+      if: startsWith(github.head_ref, 'actions/imgcmp/') != true && startsWith(github.ref_name, 'actions/imgcmp/') != true && steps.template.outputs.message != ''
       shell: bash
       run: |
         if [ -z "$(git diff --name-only)" ]; then
@@ -133,7 +133,7 @@ runs:
         fi
       id: diff
     - name: Commit images
-      if: startsWith(github.head_ref, 'actions/imgcmp/') != true && startsWith(github.ref_name, 'actions/imgcmp/') != true
+      if: startsWith(github.head_ref, 'actions/imgcmp/') != true && startsWith(github.ref_name, 'actions/imgcmp/') != true && steps.template.outputs.message != ''
       shell: bash
       run: |
         if [ -n "${{ steps.diff.outputs.no_change }}" ]; then
@@ -153,7 +153,7 @@ runs:
         echo ::set-output name=new_branch::${new_branch}
       id: commit
     - name: Create a pull request
-      if: startsWith(github.head_ref, 'actions/imgcmp/') != true && startsWith(github.ref_name, 'actions/imgcmp/') != true
+      if: startsWith(github.head_ref, 'actions/imgcmp/') != true && startsWith(github.ref_name, 'actions/imgcmp/') != true && steps.template.outputs.message != ''
       uses: peter-evans/create-pull-request@v3.14.0
       with:
         token: ${{ inputs.token }}
@@ -166,13 +166,13 @@ runs:
         draft: false
         delete-branch: true
     - name: Set outputs
-      if: startsWith(github.head_ref, 'actions/imgcmp/') != true && startsWith(github.ref_name, 'actions/imgcmp/') != true
+      if: startsWith(github.head_ref, 'actions/imgcmp/') != true && startsWith(github.ref_name, 'actions/imgcmp/') != true && steps.template.outputs.message != ''
       shell: bash
       id: set-outputs
       run: |
         echo ::set-output name=pull-request-number::$PULL_REQUEST_NUMBER
     - name: Check outputs
-      if: startsWith(github.head_ref, 'actions/imgcmp/') != true && startsWith(github.ref_name, 'actions/imgcmp/') != true
+      if: startsWith(github.head_ref, 'actions/imgcmp/') != true && startsWith(github.ref_name, 'actions/imgcmp/') != true && steps.template.outputs.message != ''
       shell: bash
       run: |
         echo "pull-request-number: ${{ steps.set-outputs.outputs.pull-request-number }}"
