@@ -1,8 +1,7 @@
-name: imgcmp
-on: [push, pull_request]
+name: imgcmp-pr
+on: [pull_request]
 jobs:
-  imgcmp:
-    if: startsWith(github.head_ref, 'actions/imgcmp/') != true
+  imgcmp-pr:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3.0.0
@@ -12,6 +11,7 @@ jobs:
           token: ${{ secrets.GITHUB_TOKEN }}
           paths-ignore-regexp: 'figs/logo\.png'
       - name: Close Pull
+        if: steps.imgcmp.outputs.pull-request-number != ''
         uses: peter-evans/close-pull@v2
         with:
           pull-request-number: ${{ steps.imgcmp.outputs.pull-request-number }}
