@@ -12,6 +12,7 @@ jobs:
           token: ${{ secrets.GITHUB_TOKEN }}
           paths-ignore-regexp: 'figs/logo\.png'
       - name: Close Pull
+        if: steps.imgcmp.outputs.pull-request-number != ''
         uses: peter-evans/close-pull@v2
         with:
           pull-request-number: ${{ steps.imgcmp.outputs.pull-request-number }}
