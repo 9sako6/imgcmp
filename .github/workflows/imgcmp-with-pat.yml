@@ -1,7 +1,7 @@
-name: imgcmp
+name: imgcmp-with-pat
 on: [push, pull_request]
 jobs:
-  imgcmp:
+  imgcmp-with-pat:
     if: startsWith(github.head_ref, 'actions/imgcmp/') != true && startsWith(github.ref_name, 'actions/imgcmp/') != true
     runs-on: ubuntu-latest
     steps:
@@ -9,7 +9,7 @@ jobs:
       - uses: ./
         id: imgcmp
         with:
-          token: ${{ secrets.GITHUB_TOKEN }}
+          token: ${{ secrets.IMGCMP_ACCESS_TOKEN }}
           paths-ignore-regexp: 'figs/logo\.png'
       - name: Close Pull
         uses: peter-evans/close-pull@v2
