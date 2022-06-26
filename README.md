@@ -23,7 +23,11 @@ A pull request example:
 
 ```yml
 name: imgcmp
-on: push
+on:
+  push:
+    branches:
+      - main
+      - master
 jobs:
   imgcmp:
     runs-on: ubuntu-latest
@@ -70,7 +74,11 @@ Example:
 
 ```yml
 name: imgcmp
-on: push
+on:
+  push:
+    branches:
+      - main
+      - master
 jobs:
   imgcmp:
     runs-on: ubuntu-latest
