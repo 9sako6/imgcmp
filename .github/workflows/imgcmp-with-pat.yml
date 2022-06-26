@@ -2,7 +2,7 @@ name: imgcmp-with-pat
 on: [push, pull_request]
 jobs:
   imgcmp-with-pat:
-    if: startsWith(github.head_ref, 'actions/imgcmp/') != true && startsWith(github.ref_name, 'actions/imgcmp/') != true
+    # if: startsWith(github.head_ref, 'actions/imgcmp/') != true && startsWith(github.ref_name, 'actions/imgcmp/') != true
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3.0.0
