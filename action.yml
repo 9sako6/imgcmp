@@ -20,6 +20,7 @@ runs:
   using: "composite"
   steps:
     - uses: denoland/setup-deno@v1.1.0
+      if: startsWith(github.head_ref, 'actions/imgcmp/') != true
       with:
         deno-version: "1.19.2"
     - name: Install cwebp, gifsicle, jpegoptim, optipng, svgo
@@ -34,6 +35,7 @@ runs:
         optipng -v
         svgo -v
     - name: Branch information
+      if: startsWith(github.head_ref, 'actions/imgcmp/') != true
       shell: bash
       run: |
         if [ '${{ github.event_name }}' = 'pull_request' ]; then
@@ -48,6 +50,7 @@ runs:
       with:
         ref: ${{ steps.branch.outputs.base_branch }}
     - name: Get actions information
+      if: startsWith(github.head_ref, 'actions/imgcmp/') != true
       shell: bash
       run: |
         if [ '.' = $(basename ${{ github.action_path }}) ]; then
@@ -62,6 +65,7 @@ runs:
         echo ::set-output name=tag::${tag}
       id: actions-info
     - name: Git reset
+      if: startsWith(github.head_ref, 'actions/imgcmp/') != true
       shell: bash
       run: |
         # NOTE: If the trigger event is 'pull_request', `git fetch` is necessary.
@@ -162,11 +166,13 @@ runs:
         draft: false
         delete-branch: true
     - name: Set outputs
+      if: startsWith(github.head_ref, 'actions/imgcmp/') != true
       shell: bash
       id: set-outputs
       run: |
         echo ::set-output name=pull-request-number::$PULL_REQUEST_NUMBER
     - name: Check outputs
+      if: startsWith(github.head_ref, 'actions/imgcmp/') != true
       shell: bash
       run: |
         echo "pull-request-number: ${{ steps.set-outputs.outputs.pull-request-number }}"
