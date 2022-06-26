@@ -1,7 +1,7 @@
 name: imgcmp-pr-pat
 on: [pull_request]
 jobs:
-  imgcmp-with-pat:
+  imgcmp-pr-pat:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3.0.0

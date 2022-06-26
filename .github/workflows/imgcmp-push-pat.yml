@@ -1,7 +1,7 @@
 name: imgcmp-push-pat
 on: [push]
 jobs:
-  imgcmp-with-pat:
+  imgcmp-push-pat:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3.0.0
