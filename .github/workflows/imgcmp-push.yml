@@ -1,14 +1,14 @@
-name: imgcmp-with-pat
-on: [push, pull_request]
+name: imgcmp-push
+on: [push]
 jobs:
-  imgcmp-with-pat:
+  imgcmp:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3.0.0
       - uses: ./
         id: imgcmp
         with:
-          token: ${{ secrets.IMGCMP_ACCESS_TOKEN }}
+          token: ${{ secrets.GITHUB_TOKEN }}
           paths-ignore-regexp: 'figs/logo\.png'
       - name: Close Pull
         if: steps.imgcmp.outputs.pull-request-number != ''

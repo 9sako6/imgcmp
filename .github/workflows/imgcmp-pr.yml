@@ -1,5 +1,5 @@
-name: imgcmp
-on: [push, pull_request]
+name: imgcmp-pr
+on: [pull_request]
 jobs:
   imgcmp:
     runs-on: ubuntu-latest
