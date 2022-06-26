@@ -25,14 +25,9 @@ name: imgcmp
 on: push
 jobs:
   imgcmp:
-    if: startsWith(github.head_ref, 'actions/imgcmp/') != true && startsWith(github.ref_name, 'actions/imgcmp/') != true
     runs-on: ubuntu-latest
     steps:
-      - uses: 9sako6/imgcmp@v2.0.1
+      - uses: 9sako6/imgcmp@v2.0.2
         with:
           token: ${{ secrets.IMGCMP_ACCESS_TOKEN }}
 ```
-
-:warning: For a PAT users :warning:
-
-`if: startsWith(github.head_ref, 'actions/imgcmp/') != true && startsWith(github.ref_name, 'actions/imgcmp/') != true` statement is necessary if you use a PAT. Without this statement, the pull request opened by imgcmp executes new actions and falls into an infinite loop.
