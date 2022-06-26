@@ -20,11 +20,11 @@ runs:
   using: "composite"
   steps:
     - uses: denoland/setup-deno@v1.1.0
-      if: startsWith(github.head_ref, 'actions/imgcmp/') != true
+      if: startsWith(github.head_ref, 'actions/imgcmp/') != true && startsWith(github.ref_name, 'actions/imgcmp/') != true
       with:
         deno-version: "1.19.2"
     - name: Install cwebp, gifsicle, jpegoptim, optipng, svgo
-      if: startsWith(github.head_ref, 'actions/imgcmp/') != true
+      if: success()
       shell: bash
       run: |
         sudo apt-get install -y webp gifsicle jpegoptim optipng
@@ -35,7 +35,7 @@ runs:
         optipng -v
         svgo -v
     - name: Branch information
-      if: startsWith(github.head_ref, 'actions/imgcmp/') != true
+      if: success()
       shell: bash
       run: |
         if [ '${{ github.event_name }}' = 'pull_request' ]; then
@@ -46,11 +46,11 @@ runs:
         echo ::set-output name=base_branch::${branch}
       id: branch
     - uses: actions/checkout@v3
-      if: startsWith(github.head_ref, 'actions/imgcmp/') != true
+      if: success()
       with:
         ref: ${{ steps.branch.outputs.base_branch }}
     - name: Get actions information
-      if: startsWith(github.head_ref, 'actions/imgcmp/') != true
+      if: success()
       shell: bash
       run: |
         if [ '.' = $(basename ${{ github.action_path }}) ]; then
@@ -65,14 +65,14 @@ runs:
         echo ::set-output name=tag::${tag}
       id: actions-info
     - name: Git reset
-      if: startsWith(github.head_ref, 'actions/imgcmp/') != true
+      if: success()
       shell: bash
       run: |
         # NOTE: If the trigger event is 'pull_request', `git fetch` is necessary.
         git fetch
         git reset --hard origin/${{ steps.branch.outputs.base_branch }}
     - name: Export images' statistics in json before optimization
-      if: startsWith(github.head_ref, 'actions/imgcmp/') != true
+      if: success()
       shell: bash
       run: |
         deno run \
@@ -82,7 +82,7 @@ runs:
           '${{ inputs.paths-ignore-regexp }}' \
           '/tmp/imgcmp-stat.json'
     - name: Optimize images
-      if: startsWith(github.head_ref, 'actions/imgcmp/') != true
+      if: success()
       shell: bash
       run: |
         deno run \
@@ -91,7 +91,7 @@ runs:
           https://raw.githubusercontent.com/9sako6/imgcmp/${{ steps.actions-info.outputs.tag }}/src/optimize.ts \
           '${{ inputs.paths-ignore-regexp }}'
     - name: Export images' statistics in json after optimization
-      if: startsWith(github.head_ref, 'actions/imgcmp/') != true
+      if: success()
       shell: bash
       run: |
         deno run \
@@ -101,7 +101,7 @@ runs:
           '${{ inputs.paths-ignore-regexp }}' \
           '/tmp/imgcmp-stat.json'
     - name: Export images' statistics in json after optimization
-      if: startsWith(github.head_ref, 'actions/imgcmp/') != true
+      if: success()
       shell: bash
       run: |
         message=$(deno run \
@@ -120,7 +120,7 @@ runs:
         echo ::set-output name=title::${title}
       id: template
     - name: Check if images were compressed
-      if: startsWith(github.head_ref, 'actions/imgcmp/') != true
+      if: success()
       shell: bash
       run: |
         if [ -z "$(git diff --name-only)" ]; then
@@ -133,7 +133,7 @@ runs:
         fi
       id: diff
     - name: Commit images
-      if: startsWith(github.head_ref, 'actions/imgcmp/') != true
+      if: success()
       shell: bash
       run: |
         if [ -n "${{ steps.diff.outputs.no_change }}" ]; then
@@ -153,7 +153,7 @@ runs:
         echo ::set-output name=new_branch::${new_branch}
       id: commit
     - name: Create a pull request
-      if: startsWith(github.head_ref, 'actions/imgcmp/') != true
+      if: success()
       uses: peter-evans/create-pull-request@v3.14.0
       with:
         token: ${{ inputs.token }}
@@ -166,13 +166,13 @@ runs:
         draft: false
         delete-branch: true
     - name: Set outputs
-      if: startsWith(github.head_ref, 'actions/imgcmp/') != true
+      if: success()
       shell: bash
       id: set-outputs
       run: |
         echo ::set-output name=pull-request-number::$PULL_REQUEST_NUMBER
     - name: Check outputs
-      if: startsWith(github.head_ref, 'actions/imgcmp/') != true
+      if: success()
       shell: bash
       run: |
         echo "pull-request-number: ${{ steps.set-outputs.outputs.pull-request-number }}"

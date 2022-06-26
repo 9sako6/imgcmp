@@ -26,7 +26,7 @@ name: imgcmp
 on: push
 jobs:
   imgcmp:
-    if: startsWith(github.head_ref, 'actions/imgcmp/') != true
+    if: startsWith(github.head_ref, 'actions/imgcmp/') != true && startsWith(github.ref_name, 'actions/imgcmp/') != true
     runs-on: ubuntu-latest
     steps:
       - uses: 9sako6/imgcmp@v2.0.1
@@ -43,7 +43,7 @@ on:
     - cron: "0 0 * * 1" # Weekly build
 jobs:
   imgcmp:
-    if: startsWith(github.head_ref, 'actions/imgcmp/') != true
+    if: startsWith(github.head_ref, 'actions/imgcmp/') != true && startsWith(github.ref_name, 'actions/imgcmp/') != true
     runs-on: ubuntu-latest
     steps:
       - uses: 9sako6/imgcmp@v2.0.1
@@ -60,7 +60,7 @@ Then, you will receive a pull request with optimized images every Monday at
 
 | Name|Description|Required|
 | - | - | - |
-| `token`| `GITHUB_TOKEN` or a [Personal access token (PAT)](https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/creating-a-personal-access-token). In a private repository, you have to use a PAT with enough permissions. See [How to use a Personal Access Token](./doc/pat.md). :warning: **For a Personal access token (PAT) users** :warning: `if: startsWith(github.head_ref, 'actions/imgcmp/') != true` statement is necessary if you use a PAT. Without this statement, the pull request opened by imgcmp executes new actions and falls into an infinite loop. |true |
+| `token`| `GITHUB_TOKEN` or a [Personal access token (PAT)](https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/creating-a-personal-access-token). In a private repository, you have to use a PAT with enough permissions. See [How to use a Personal Access Token](./doc/pat.md). :warning: **For a Personal access token (PAT) users** :warning: `if: startsWith(github.head_ref, 'actions/imgcmp/') != true && startsWith(github.ref_name, 'actions/imgcmp/') != true` statement is necessary if you use a PAT. Without this statement, the pull request opened by imgcmp executes new actions and falls into an infinite loop. |true |
 | `paths-ignore-regexp`| Regular expression for images' paths you don't want to compress. | false    |
 
 #### `paths-ignore-regexp`
@@ -75,7 +75,7 @@ name: imgcmp
 on: push
 jobs:
   imgcmp:
-    if: startsWith(github.head_ref, 'actions/imgcmp/') != true
+    if: startsWith(github.head_ref, 'actions/imgcmp/') != true && startsWith(github.ref_name, 'actions/imgcmp/') != true
     runs-on: ubuntu-latest
     steps:
       - uses: 9sako6/imgcmp@v2.0.1
