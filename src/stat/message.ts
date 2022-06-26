@@ -1,12 +1,16 @@
-import type { Stat } from "./file_stat_json.ts";
+import { fileStatistics, readStatJson } from "./file_stat_json.ts";
 import { bytesToUnit } from "../image/file_size.ts";
 
+const THRESHOLD = 3.14;
+
 export const statMessage = async (statJsonPath: string) => {
-  const stats: Stat = JSON.parse(
-    (await Deno.readTextFile(statJsonPath)) || "{}",
-  );
-  let totalBeforeBytes = 0;
-  let totalAfterBytes = 0;
+  const stats = await readStatJson(statJsonPath);
+
+  const {
+    totalBeforeBytes,
+    totalAfterBytes,
+    totalDiffRate,
+  } = fileStatistics(stats);
 
   const headers = [
     `<tr>
@@ -25,9 +29,6 @@ export const statMessage = async (statJsonPath: string) => {
       2,
     );
 
-    totalBeforeBytes += beforeBytes;
-    totalAfterBytes += afterBytes;
-
     rows.push(
       `<tr>
         <td>${path}</td>
@@ -37,11 +38,6 @@ export const statMessage = async (statJsonPath: string) => {
       </tr>`,
     );
   }
-
-  const totalDiffRate =
-    ((totalBeforeBytes - totalAfterBytes) / totalBeforeBytes * 100).toFixed(
-      2,
-    );
 
   const footers = [
     `<tr>
@@ -54,11 +50,19 @@ export const statMessage = async (statJsonPath: string) => {
       <td>Total</td>
       <td>${bytesToUnit(totalBeforeBytes)}</td>
       <td>${bytesToUnit(totalAfterBytes)}</td>
-      <td>-${totalDiffRate}%</td>
+      <td>-${
+      totalDiffRate.toFixed(
+        2,
+      )
+    }%</td>
     </tr>`,
   ];
 
-  const message = `Optimize images (reduced by ${totalDiffRate}%)
+  const message = `Optimize images (reduced by ${
+    totalDiffRate.toFixed(
+      2,
+    )
+  }%)
 
   <table>
     ${
@@ -71,6 +75,10 @@ export const statMessage = async (statJsonPath: string) => {
   </table>
 
   This Pull Request is created by GitHub Actions ([9sako6/imgcmp](https://github.com/9sako6/imgcmp)).`;
+
+  if (totalDiffRate < THRESHOLD) {
+    return "";
+  }
 
   return message;
 };
