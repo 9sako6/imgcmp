@@ -38,12 +38,8 @@ runs:
       if: startsWith(github.head_ref, 'actions/imgcmp/') != true && startsWith(github.ref_name, 'actions/imgcmp/') != true
       shell: bash
       run: |
-        if [ '${{ github.event_name }}' = 'pull_request' ]; then
-          branch=${{ github.head_ref }}
-        else
-          branch=${{ github.ref_name }}
-        fi
-        echo ::set-output name=base_branch::${branch}
+        # NOTE: `head_ref` is available when an action is triggered by pull request event.
+        echo ::set-output name=base_branch::${{ github.head_ref || github.ref_name }}
       id: branch
     - uses: actions/checkout@v3
       if: startsWith(github.head_ref, 'actions/imgcmp/') != true && startsWith(github.ref_name, 'actions/imgcmp/') != true
