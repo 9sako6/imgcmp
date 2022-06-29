@@ -50,11 +50,7 @@ runs:
       shell: bash
       run: |
         if [ '.' = $(basename ${{ github.action_path }}) ]; then
-          if [ '${{ github.event_name }}' = 'pull_request' ]; then
-            tag='${{ steps.branch.outputs.base_branch }}'
-          else
-            tag=${GITHUB_REF##*/}
-          fi
+          tag=${{ steps.branch.outputs.base_branch }}
         else
           tag=$(basename ${{ github.action_path }})
         fi
