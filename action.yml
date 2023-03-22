@@ -39,7 +39,7 @@ runs:
       shell: bash
       run: |
         # NOTE: `head_ref` is available when an action is triggered by pull request event.
-        echo ::set-output name=base_branch::${{ github.head_ref || github.ref_name }}
+        echo "base_branch=${{ github.head_ref || github.ref_name }}" >> $GITHUB_OUTPUT
       id: branch
     - uses: actions/checkout@v3
       if: startsWith(github.head_ref, 'actions/imgcmp/') != true && startsWith(github.ref_name, 'actions/imgcmp/') != true
@@ -54,7 +54,7 @@ runs:
         else
           tag=$(basename ${{ github.action_path }})
         fi
-        echo ::set-output name=tag::${tag}
+        echo "tag=${tag}" >> $GITHUB_OUTPUT
       id: actions-info
     - name: Git reset
       if: startsWith(github.head_ref, 'actions/imgcmp/') != true && startsWith(github.ref_name, 'actions/imgcmp/') != true
@@ -108,8 +108,8 @@ runs:
           '/tmp/imgcmp-stat.json'
         )
 
-        echo ::set-output name=message::${message}
-        echo ::set-output name=title::${title}
+        echo "message=${message}" >> $GITHUB_OUTPUT
+        echo "title=${title}" >> $GITHUB_OUTPUT
       id: template
     - name: Check if images were compressed
       if: startsWith(github.head_ref, 'actions/imgcmp/') != true && startsWith(github.ref_name, 'actions/imgcmp/') != true && steps.template.outputs.message != ''
@@ -117,7 +117,7 @@ runs:
       run: |
         if [ -z "$(git diff --name-only)" ]; then
           echo 'There was no change in all the images.'
-          echo "::set-output name=no_change::true"
+          echo "no_change=true" >> $GITHUB_OUTPUT
         else
           echo "::group::git diff"
           git diff --name-only
@@ -141,8 +141,8 @@ runs:
         sha=$(git rev-parse --short HEAD)
         new_branch="actions/imgcmp/${sha}"
 
-        echo ::set-output name=sha::${sha}
-        echo ::set-output name=new_branch::${new_branch}
+        echo "sha=${sha}" >> $GITHUB_OUTPUT
+        echo "new_branch=${new_branch}" >> $GITHUB_OUTPUT
       id: commit
     - name: Create a pull request
       if: startsWith(github.head_ref, 'actions/imgcmp/') != true && startsWith(github.ref_name, 'actions/imgcmp/') != true && steps.template.outputs.message != ''
@@ -162,7 +162,7 @@ runs:
       shell: bash
       id: set-outputs
       run: |
-        echo ::set-output name=pull-request-number::$PULL_REQUEST_NUMBER
+        echo "pull-request-number=$PULL_REQUEST_NUMBER" >> $GITHUB_OUTPUT
     - name: Check outputs
       if: startsWith(github.head_ref, 'actions/imgcmp/') != true && startsWith(github.ref_name, 'actions/imgcmp/') != true && steps.template.outputs.message != ''
       shell: bash
