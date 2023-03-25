@@ -1,5 +1,7 @@
 name: imgcmp-push
-on: [push]
+on:
+  - push
+  - workflow_dispatch
 jobs:
   imgcmp-push:
     runs-on: ubuntu-latest

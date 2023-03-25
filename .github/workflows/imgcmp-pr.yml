@@ -1,5 +1,7 @@
 name: imgcmp-pr
-on: [pull_request]
+on:
+  - pull_request
+  - workflow_dispatch
 jobs:
   imgcmp-pr:
     runs-on: ubuntu-latest
