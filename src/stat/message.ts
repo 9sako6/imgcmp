@@ -23,7 +23,7 @@ export const statMessage = async (statJsonPath: string) => {
   ];
 
   const rows: string[] = [];
-  let messageLength: number = 0;
+  let messageLength = 0;
 
   for (const path of Object.keys(stats)) {
     const [beforeBytes, afterBytes] = stats[path].bytes.slice(-2);
