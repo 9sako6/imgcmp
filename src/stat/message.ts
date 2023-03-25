@@ -2,6 +2,7 @@ import { fileStatistics, readStatJson } from "./file_stat_json.ts";
 import { bytesToUnit } from "../image/file_size.ts";
 
 const THRESHOLD = 3.14;
+const MAX_MESSAGE_LENGTH = 65536;
 
 export const statMessage = async (statJsonPath: string) => {
   const stats = await readStatJson(statJsonPath);
@@ -22,12 +23,25 @@ export const statMessage = async (statJsonPath: string) => {
   ];
 
   const rows: string[] = [];
+  let messageLength: number = 0;
 
   for (const path of Object.keys(stats)) {
     const [beforeBytes, afterBytes] = stats[path].bytes.slice(-2);
     const diffRate = ((beforeBytes - afterBytes) / beforeBytes * 100).toFixed(
       2,
     );
+
+    if (messageLength > MAX_MESSAGE_LENGTH - 1000) {
+      rows.push(
+        `<tr>
+          <td>...</td>
+          <td>...</td>
+          <td>...</td>
+          <td>...</td>
+        </tr>`,
+      );
+      break;
+    }
 
     rows.push(
       `<tr>
@@ -37,6 +51,8 @@ export const statMessage = async (statJsonPath: string) => {
         <td>-${diffRate}%</td>
       </tr>`,
     );
+
+    messageLength += rows[rows.length - 1].length;
   }
 
   const footers = [
