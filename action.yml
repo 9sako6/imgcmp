@@ -108,7 +108,9 @@ runs:
           '/tmp/imgcmp-stat.json'
         )
 
-        echo "message=${message}" >> $GITHUB_OUTPUT
+        echo "message<<EOF" >> $GITHUB_OUTPUT
+        echo "${message}" >> $GITHUB_OUTPUT
+        echo "EOF" >> $GITHUB_OUTPUT
         echo "title=${title}" >> $GITHUB_OUTPUT
       id: template
     - name: Check if images were compressed
