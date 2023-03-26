@@ -189,6 +189,6 @@ There are breaking changes from version `1.0.1`.
 - Refactoring the pull request template
   (https://github.com/9sako6/imgcmp/pull/26)
 
-## Author
+## Roadmap
 
-9sako6
+- Make it more maintainable...
