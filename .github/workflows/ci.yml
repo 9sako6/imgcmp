@@ -7,9 +7,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3.0.0
-      - uses: denoland/setup-deno@v1.1.0
+      - uses: denoland/setup-deno@v1.1.1
         with:
-          deno-version: "1.19.2"
+          deno-version: "1.32.1"
       - name: Run fmt
         run: |
           deno fmt --check
