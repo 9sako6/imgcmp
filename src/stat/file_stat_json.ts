@@ -41,8 +41,8 @@ export const fileStatistics = (json: Stat) => {
     totalAfterBytes += afterBytes;
   }
 
-  const totalDiffRate =
-    ((totalBeforeBytes - totalAfterBytes) / totalBeforeBytes * 100);
+  const totalDiffRate = (totalBeforeBytes - totalAfterBytes) /
+    totalBeforeBytes * 100;
 
   return {
     totalAfterBytes,
