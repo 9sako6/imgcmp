@@ -34,12 +34,16 @@ runs:
         jpegoptim --version
         optipng -v
         svgo -v
+    - name: Get branch name
+      if: startsWith(github.head_ref, 'actions/imgcmp/') != true && startsWith(github.ref_name, 'actions/imgcmp/') != true
+      shell: bash
+      uses: tj-actions/branch-names@v6
+      id: branch-name
     - name: Branch information
       if: startsWith(github.head_ref, 'actions/imgcmp/') != true && startsWith(github.ref_name, 'actions/imgcmp/') != true
       shell: bash
       run: |
-        # NOTE: `head_ref` is available when an action is triggered by pull request event.
-        echo "base_branch=${{ github.head_ref || github.ref_name }}" >> $GITHUB_OUTPUT
+        echo "base_branch=${{ steps.branch-name.outputs.current_branch }}" >> $GITHUB_OUTPUT
       id: branch
     - uses: actions/checkout@v3
       if: startsWith(github.head_ref, 'actions/imgcmp/') != true && startsWith(github.ref_name, 'actions/imgcmp/') != true
