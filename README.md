@@ -40,6 +40,14 @@ jobs:
           token: ${{ secrets.GITHUB_TOKEN }}
 ```
 
+> **Warning**
+> ```yaml
+> - uses: 9sako6/imgcmp@master # NG
+> ```
+>
+> Do not reference `master` since that is the latest code and can be
+> carrying breaking changes of the next major version.
+
 If you want to run this action only once a week, please add the following lines.
 
 ```yml
