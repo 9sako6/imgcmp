@@ -36,7 +36,6 @@ runs:
         svgo -v
     - name: Get branch name
       if: startsWith(github.head_ref, 'actions/imgcmp/') != true && startsWith(github.ref_name, 'actions/imgcmp/') != true
-      shell: bash
       uses: tj-actions/branch-names@v6
       id: branch-name
     - name: Branch information
