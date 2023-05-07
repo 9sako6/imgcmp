@@ -22,6 +22,15 @@ runs:
     - name: Get branch name
       uses: tj-actions/branch-names@v6
       id: branch-name
+    - name: Check if the action should be skipped
+      shell: bash
+      run: |
+        echo "is_skipped=${{ steps.branch-name.outputs.is_tag != 'true' && startsWith(github.head_ref, 'actions/imgcmp/') != true && startsWith(github.ref_name, 'actions/imgcmp/') != true }}" >> $GITHUB_OUTPUT
+      id: check
+    - name: Debug
+      shell: bash
+      run: |
+        echo ${{ steps.check.outputs.is_skipped }}
     - uses: denoland/setup-deno@v1.1.0
       if: steps.branch-name.outputs.is_tag != 'true' && startsWith(github.head_ref, 'actions/imgcmp/') != true && startsWith(github.ref_name, 'actions/imgcmp/') != true
       with:
