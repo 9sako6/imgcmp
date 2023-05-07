@@ -1,4 +1,4 @@
-<h1 align="center">imgcmp v2.0.3</h1>
+<h1 align="center">imgcmp v2.0.4</h1>
 
 <p align="center"><img src="./figs/logo.png" width="50%"></p>
 
@@ -35,7 +35,7 @@ jobs:
       contents: write
       pull-requests: write
     steps:
-      - uses: 9sako6/imgcmp@v2.0.3
+      - uses: 9sako6/imgcmp@v2.0.4
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
 ```
@@ -62,7 +62,7 @@ jobs:
       contents: write
       pull-requests: write
     steps:
-      - uses: 9sako6/imgcmp@v2.0.3
+      - uses: 9sako6/imgcmp@v2.0.4
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
 ```
@@ -100,7 +100,7 @@ jobs:
       contents: write
       pull-requests: write
     steps:
-      - uses: 9sako6/imgcmp@v2.0.3
+      - uses: 9sako6/imgcmp@v2.0.4
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           paths-ignore-regexp: "(ignore/.*)|(public/.*)"
@@ -115,7 +115,7 @@ jobs:
 Step outputs can be accessed as in the following example.
 
 ```yml
-      - uses: 9sako6/imgcmp@v2.0.3
+      - uses: 9sako6/imgcmp@v2.0.4
         id: imgcmp
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
@@ -165,6 +165,10 @@ It took 34 sec to create the following PR.
 <p align="center"><img src="./figs/sample_pull_request.png"></p>
 
 ## Change Log
+
+### `v2.0.4` (May 7, 2023)
+
+- Use [tj-actions/branch-names](https://github.com/tj-actions/branch-names) actions to get a branch name (https://github.com/9sako6/imgcmp/pull/311) 
 
 ### `v2.0.3` (March 25, 2023)
 

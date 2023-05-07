@@ -31,7 +31,7 @@ jobs:
   imgcmp:
     runs-on: ubuntu-latest
     steps:
-      - uses: 9sako6/imgcmp@v2.0.3
+      - uses: 9sako6/imgcmp@v2.0.4
         with:
           token: ${{ secrets.IMGCMP_ACCESS_TOKEN }}
 ```
