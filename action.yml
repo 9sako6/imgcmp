@@ -34,23 +34,20 @@ runs:
         jpegoptim --version
         optipng -v
         svgo -v
-    - name: Branch information
+    - name: Get branch name
       if: startsWith(github.head_ref, 'actions/imgcmp/') != true && startsWith(github.ref_name, 'actions/imgcmp/') != true
-      shell: bash
-      run: |
-        # NOTE: `head_ref` is available when an action is triggered by pull request event.
-        echo "base_branch=${{ github.head_ref || github.ref_name }}" >> $GITHUB_OUTPUT
-      id: branch
+      uses: tj-actions/branch-names@v6
+      id: branch-name
     - uses: actions/checkout@v3
       if: startsWith(github.head_ref, 'actions/imgcmp/') != true && startsWith(github.ref_name, 'actions/imgcmp/') != true
       with:
-        ref: ${{ steps.branch.outputs.base_branch }}
+        ref: ${{ steps.branch-name.outputs.current_branch }}
     - name: Get actions information
       if: startsWith(github.head_ref, 'actions/imgcmp/') != true && startsWith(github.ref_name, 'actions/imgcmp/') != true
       shell: bash
       run: |
         if [ '.' = $(basename ${{ github.action_path }}) ]; then
-          tag=${{ steps.branch.outputs.base_branch }}
+          tag=${{ steps.branch-name.outputs.current_branch }}
         else
           tag=$(basename ${{ github.action_path }})
         fi
@@ -62,7 +59,7 @@ runs:
       run: |
         # NOTE: If the trigger event is 'pull_request', `git fetch` is necessary.
         git fetch
-        git reset --hard origin/${{ steps.branch.outputs.base_branch }}
+        git reset --hard origin/${{ steps.branch-name.outputs.current_branch }}
     - name: Export images' statistics in json before optimization
       if: startsWith(github.head_ref, 'actions/imgcmp/') != true && startsWith(github.ref_name, 'actions/imgcmp/') != true
       shell: bash
@@ -154,7 +151,7 @@ runs:
         committer: GitHub <noreply@github.com>
         author: ${{ github.actor }} <${{ github.actor }}@users.noreply.github.com>
         branch: ${{ steps.commit.outputs.new_branch }}
-        base: ${{ steps.branch.outputs.base_branch }}
+        base: ${{ steps.branch-name.outputs.current_branch }}
         title: ${{ steps.template.outputs.title }}
         body: ${{ steps.template.outputs.message }}
         draft: false
