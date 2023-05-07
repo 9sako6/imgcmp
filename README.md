@@ -168,6 +168,9 @@ It took 34 sec to create the following PR.
 
 ### `v2.0.4` (May 7, 2023)
 
+Bug fixes.
+
+- Skip actions when a tag is pushed (https://github.com/9sako6/imgcmp/pull/333)
 - Use [tj-actions/branch-names](https://github.com/tj-actions/branch-names) actions to get a branch name (https://github.com/9sako6/imgcmp/pull/311) 
 
 ### `v2.0.3` (March 25, 2023)
